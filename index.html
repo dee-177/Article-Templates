@@ -1,1317 +1,1302 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Suger KB — Article Templates</title>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #f3f4f6;
-      color: #111827;
-      display: flex;
-      min-height: 100vh;
-      font-size: 14px;
-      line-height: 1.6;
-    }
-
-    /* ── Sidebar ── */
-    .sidebar {
-      width: 248px;
-      min-height: 100vh;
-      background: #0f172a;
-      position: fixed;
-      top: 0; left: 0;
-      display: flex;
-      flex-direction: column;
-      z-index: 20;
-    }
-
-    .sidebar-brand {
-      padding: 22px 20px 18px;
-      border-bottom: 1px solid #1e293b;
-    }
-
-    .sidebar-brand h1 {
-      color: #f1f5f9;
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-    }
-
-    .sidebar-brand p {
-      color: #64748b;
-      font-size: 11px;
-      margin-top: 3px;
-    }
-
-    .sidebar-section-label {
-      color: #475569;
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      padding: 20px 20px 8px;
-    }
-
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 20px;
-      color: #94a3b8;
-      font-size: 13px;
-      cursor: pointer;
-      border-left: 3px solid transparent;
-      transition: all 0.15s;
-      user-select: none;
-    }
-
-    .nav-item:hover { color: #e2e8f0; background: #1e293b; }
-
-    .nav-item.active {
-      color: #fff;
-      background: #1e293b;
-      font-weight: 600;
-    }
-
-    .nav-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    .dot-howto      { background: #f97316; }
-    .dot-integration{ background: #3b82f6; }
-    .dot-overview   { background: #8b5cf6; }
-    .dot-faq        { background: #10b981; }
-    .dot-ts         { background: #ef4444; }
-
-    .nav-item.active[data-tab="howto"]       { border-left-color: #f97316; }
-    .nav-item.active[data-tab="integration"] { border-left-color: #3b82f6; }
-    .nav-item.active[data-tab="overview"]    { border-left-color: #8b5cf6; }
-    .nav-item.active[data-tab="faq"]         { border-left-color: #10b981; }
-    .nav-item.active[data-tab="ts"]          { border-left-color: #ef4444; }
-
-    .sidebar-footer {
-      margin-top: auto;
-      padding: 16px 20px;
-      border-top: 1px solid #1e293b;
-      font-size: 11px;
-      color: #475569;
-    }
-
-    /* ── Main ── */
-    .main {
-      margin-left: 248px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .topbar {
-      background: white;
-      border-bottom: 1px solid #e5e7eb;
-      padding: 14px 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-
-    .topbar-left h2 { font-size: 16px; font-weight: 700; color: #0f172a; }
-    .topbar-left p  { font-size: 12px; color: #64748b; margin-top: 1px; }
-
-    .toggle-btn {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      padding: 7px 14px;
-      border-radius: 8px;
-      border: 1px solid #e5e7eb;
-      background: white;
-      color: #374151;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .toggle-btn:hover { background: #f9fafb; }
-
-    .toggle-btn.on {
-      background: #fffbeb;
-      border-color: #fbbf24;
-      color: #92400e;
-    }
-
-    .content { padding: 28px 32px; max-width: 920px; }
-
-    /* ── Legend ── */
-    .legend {
-      background: white;
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
-      padding: 16px 20px;
-      margin-bottom: 28px;
-    }
-
-    .legend-title {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      color: #6b7280;
-      margin-bottom: 12px;
-    }
-
-    .legend-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      color: #374151;
-    }
-
-    .legend-swatch {
-      width: 14px; height: 14px;
-      border-radius: 3px;
-    }
-
-    /* ── Template panels ── */
-    .panel { display: none; }
-    .panel.active { display: block; }
-
-    /* ── Template header ── */
-    .tmpl-header { margin-bottom: 24px; }
-
-    .type-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 20px;
-      margin-bottom: 8px;
-    }
-
-    .type-howto       { background: #ffedd5; color: #c2410c; }
-    .type-integration { background: #dbeafe; color: #1d4ed8; }
-    .type-overview    { background: #ede9fe; color: #6d28d9; }
-    .type-faq         { background: #d1fae5; color: #065f46; }
-    .type-ts          { background: #fee2e2; color: #991b1b; }
-
-    .tmpl-header h2 { font-size: 20px; font-weight: 800; color: #0f172a; }
-    .tmpl-header p  { font-size: 13px; color: #6b7280; margin-top: 4px; }
-
-    /* ── Article card ── */
-    .a-card {
-      background: white;
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      overflow: hidden;
-      margin-bottom: 20px;
-    }
-
-    .a-section { border-bottom: 1px solid #f3f4f6; }
-    .a-section:last-child { border-bottom: none; }
-
-    .a-section-head {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 20px;
-      background: #f8fafc;
-      border-bottom: 1px solid #e5e7eb;
-    }
-
-    .a-section-head.accent-howto       { border-left: 4px solid #f97316; }
-    .a-section-head.accent-integration { border-left: 4px solid #3b82f6; }
-    .a-section-head.accent-overview    { border-left: 4px solid #8b5cf6; }
-    .a-section-head.accent-faq         { border-left: 4px solid #10b981; }
-    .a-section-head.accent-ts          { border-left: 4px solid #ef4444; }
-
-    .a-section-label {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: #6b7280;
-    }
-
-    .badge {
-      font-size: 10px;
-      font-weight: 700;
-      padding: 2px 7px;
-      border-radius: 10px;
-    }
-
-    .badge-req  { background: #fee2e2; color: #991b1b; }
-    .badge-opt  { background: #f3f4f6; color: #6b7280; }
-    .badge-cond { background: #fef3c7; color: #92400e; }
-
-    .a-body { padding: 18px 20px; }
-
-    /* ── Author notes ── */
-    .author-note {
-      background: #fffbeb;
-      border: 1px solid #fcd34d;
-      border-left: 4px solid #f59e0b;
-      border-radius: 6px;
-      padding: 11px 14px;
-      margin-bottom: 14px;
-      font-size: 12px;
-      color: #78350f;
-      display: none;
-    }
-
-    .author-note.show { display: block; }
-
-    .an-head {
-      font-weight: 700;
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      color: #92400e;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      margin-bottom: 7px;
-    }
-
-    .author-note ul { padding-left: 14px; }
-    .author-note li { margin-bottom: 3px; line-height: 1.5; }
-
-    .author-note code {
-      background: #fef3c7;
-      padding: 1px 4px;
-      border-radius: 3px;
-      font-family: 'SF Mono', Menlo, monospace;
-      font-size: 11px;
-    }
-
-    /* ── Placeholders ── */
-    .ph {
-      color: #9ca3af;
-      font-style: italic;
-    }
-
-    .ph-block {
-      background: #f9fafb;
-      border: 1.5px dashed #d1d5db;
-      border-radius: 6px;
-      padding: 10px 14px;
-      color: #9ca3af;
-      font-style: italic;
-      font-size: 13px;
-      margin-bottom: 10px;
-      line-height: 1.5;
-    }
-
-    /* ── Article typography ── */
-    .art-title {
-      font-size: 22px;
-      font-weight: 800;
-      color: #d1d5db;
-      font-style: italic;
-      margin-bottom: 6px;
-    }
-
-    .art-summary {
-      background: #eff6ff;
-      border-left: 3px solid #93c5fd;
-      border-radius: 0 6px 6px 0;
-      padding: 10px 14px;
-      font-size: 13px;
-      color: #1e40af;
-      font-style: italic;
-      margin-bottom: 12px;
-    }
-
-    .art-intro { font-size: 14px; color: #9ca3af; font-style: italic; line-height: 1.6; }
-
-    .h2 {
-      font-size: 15px;
-      font-weight: 700;
-      color: #1f2937;
-      margin: 18px 0 8px;
-      padding-bottom: 6px;
-      border-bottom: 2px solid #f3f4f6;
-    }
-
-    .h3 {
-      font-size: 13px;
-      font-weight: 700;
-      color: #374151;
-      margin: 14px 0 6px;
-    }
-
-    .step-list { list-style: none; padding: 0; }
-
-    .step-list li {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 8px;
-      font-size: 13px;
-      color: #374151;
-      align-items: flex-start;
-    }
-
-    .step-num {
-      min-width: 20px; height: 20px;
-      background: #f97316;
-      color: white;
-      border-radius: 50%;
-      font-size: 10px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-
-    .step-num.blue  { background: #3b82f6; }
-    .step-num.red   { background: #ef4444; }
-    .step-num.green { background: #10b981; }
-
-    .bullet-list { list-style: none; padding: 0; }
-
-    .bullet-list li {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 6px;
-      font-size: 13px;
-      color: #374151;
-    }
-
-    .bullet-list li::before { content: '•'; color: #f97316; font-weight: 700; }
-
-    b.ui { font-weight: 700; color: #111827; }
-
-    /* ── Pylon callouts ── */
-    .callout {
-      border-radius: 8px;
-      padding: 12px 15px;
-      margin: 10px 0;
-      display: flex;
-      gap: 11px;
-      align-items: flex-start;
-    }
-
-    .callout-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
-
-    .callout-body-wrap { flex: 1; }
-
-    .callout-title {
-      font-weight: 700;
-      font-size: 12px;
-      margin-bottom: 3px;
-    }
-
-    .callout-text { font-size: 12px; line-height: 1.5; }
-
-    .c-tip   { background: #0a2218; border: 1px solid #14532d; }
-    .c-tip   .callout-title { color: #86efac; }
-    .c-tip   .callout-text  { color: #bbf7d0; }
-
-    .c-note  { background: #0c1b33; border: 1px solid #1e3a8a; }
-    .c-note  .callout-title { color: #93c5fd; }
-    .c-note  .callout-text  { color: #bfdbfe; }
-
-    .c-warn  { background: #1c1400; border: 1px solid #78350f; }
-    .c-warn  .callout-title { color: #fcd34d; }
-    .c-warn  .callout-text  { color: #fde68a; }
-
-    .c-pre   { background: #120828; border: 1px solid #4c1d95; }
-    .c-pre   .callout-title { color: #c4b5fd; }
-    .c-pre   .callout-text  { color: #ddd6fe; }
-    .c-pre   .pre-list { list-style: none; padding: 0; margin-top: 6px; }
-    .c-pre   .pre-list li { display: flex; gap: 7px; margin-bottom: 5px; font-size: 12px; color: #ddd6fe; }
-    .c-pre   .pre-list li::before { content: '☐'; color: #a78bfa; }
-
-    .c-qa    { background: #180d04; border: 1px solid #7c2d12; }
-    .c-qa    .callout-title { color: #fb923c; }
-    .c-qa    .callout-text  { color: #fed7aa; }
-
-    /* ── Tables ── */
-    .tmpl-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-      margin: 10px 0;
-      border-radius: 8px;
-      overflow: hidden;
-      border: 1px solid #e5e7eb;
-    }
-
-    .tmpl-table th {
-      background: #f3f4f6;
-      padding: 9px 13px;
-      text-align: left;
-      font-weight: 700;
-      color: #374151;
-      border-bottom: 1px solid #e5e7eb;
-      border-right: 1px solid #e5e7eb;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    .tmpl-table th:last-child { border-right: none; }
-
-    .tmpl-table td {
-      padding: 9px 13px;
-      border-bottom: 1px solid #f3f4f6;
-      border-right: 1px solid #f3f4f6;
-      color: #374151;
-      vertical-align: top;
-    }
-
-    .tmpl-table td:last-child { border-right: none; }
-    .tmpl-table tr:last-child td { border-bottom: none; }
-    .tmpl-table tr:nth-child(even) td { background: #fafafa; }
-    .tmpl-table td.ph { color: #9ca3af; font-style: italic; }
-
-    .table-note {
-      font-size: 11px;
-      color: #9ca3af;
-      font-style: italic;
-      margin-top: 5px;
-    }
-
-    /* ── Tabs (prerequisites) ── */
-    .tab-group {
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      overflow: hidden;
-      margin: 10px 0;
-    }
-
-    .tab-btns {
-      display: flex;
-      background: #f3f4f6;
-      border-bottom: 1px solid #e5e7eb;
-    }
-
-    .tab-btn {
-      padding: 8px 15px;
-      font-size: 12px;
-      font-weight: 600;
-      color: #6b7280;
-      cursor: pointer;
-      border: none;
-      background: none;
-      border-bottom: 2px solid transparent;
-      transition: all 0.15s;
-    }
-
-    .tab-btn.active { color: #f97316; border-bottom-color: #f97316; background: white; }
-
-    .tab-pane { padding: 12px 14px; display: none; background: white; }
-    .tab-pane.active { display: block; }
-
-    /* ── Progressive tiers ── */
-    .tier {
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      margin-bottom: 10px;
-      overflow: hidden;
-    }
-
-    .tier-head {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 9px 14px;
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .tier-1 .tier-head { background: #f0fdf4; color: #166534; border-bottom: 1px solid #dcfce7; }
-    .tier-2 .tier-head { background: #eff6ff; color: #1e40af; border-bottom: 1px solid #dbeafe; }
-    .tier-3 .tier-head { background: #fefce8; color: #854d0e; border-bottom: 1px solid #fef08a; }
-
-    .tier-badge {
-      font-size: 10px;
-      padding: 1px 7px;
-      border-radius: 10px;
-      font-weight: 600;
-    }
-
-    .tier-1 .tier-badge { background: #dcfce7; color: #166534; }
-    .tier-2 .tier-badge { background: #dbeafe; color: #1e40af; }
-    .tier-3 .tier-badge { background: #fef08a; color: #854d0e; }
-
-    .tier-body { padding: 12px 14px; background: white; }
-
-    /* ── What's next box ── */
-    .whats-next {
-      background: #f0fdf4;
-      border: 1px solid #bbf7d0;
-      border-radius: 8px;
-      padding: 14px 16px;
-    }
-
-    .wn-title {
-      font-size: 12px;
-      font-weight: 700;
-      color: #166534;
-      margin-bottom: 8px;
-    }
-
-    .wn-item {
-      font-size: 12px;
-      color: #15803d;
-      margin-bottom: 5px;
-      display: flex;
-      gap: 7px;
-    }
-
-    .wn-item::before { content: '→'; font-weight: 700; }
-
-    /* ── Verify box ── */
-    .verify-box {
-      background: #eff6ff;
-      border: 1px solid #bfdbfe;
-      border-radius: 8px;
-      padding: 14px 16px;
-    }
-
-    .verify-title {
-      font-size: 12px;
-      font-weight: 700;
-      color: #1e40af;
-      margin-bottom: 8px;
-    }
-
-    /* ── Related articles ── */
-    .related-link {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      font-size: 13px;
-      color: #f97316;
-      margin-bottom: 6px;
-      font-style: italic;
-    }
-
-    .related-link::before { content: '→'; font-weight: 700; }
-
-    /* ── Title rules ── */
-    .title-rules {
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      padding: 12px 14px;
-      margin-bottom: 14px;
-    }
-
-    .tr-head {
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      color: #6b7280;
-      margin-bottom: 8px;
-    }
-
-    .tr-ex { font-size: 12px; margin-bottom: 4px; }
-    .tr-ex.good { color: #166534; }
-    .tr-ex.bad  { color: #991b1b; }
-    .tr-ex.good::before { content: '✅ '; }
-    .tr-ex.bad::before  { content: '❌ '; }
-
-    .tr-rules {
-      list-style: none;
-      padding: 0;
-      border-top: 1px solid #e5e7eb;
-      padding-top: 8px;
-      margin-top: 8px;
-    }
-
-    .tr-rules li {
-      font-size: 11px;
-      color: #6b7280;
-      padding: 1px 0;
-    }
-
-    .tr-rules li::before { content: '· '; color: #9ca3af; }
-
-    /* ── Error section header ── */
-    .error-section {
-      border: 1px solid #fecaca;
-      border-radius: 8px;
-      overflow: hidden;
-      margin-bottom: 14px;
-    }
-
-    .error-head {
-      background: #fff1f2;
-      padding: 10px 14px;
-      border-bottom: 1px solid #fecaca;
-      font-size: 12px;
-      font-weight: 700;
-      color: #991b1b;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .error-body { padding: 14px; background: white; }
-
-    .error-meta { font-size: 12px; color: #374151; margin-bottom: 6px; }
-    .error-meta strong { color: #111827; }
-
-    .divider { height: 1px; background: #f3f4f6; margin: 16px 0; }
-
-    /* ── Contact support box ── */
-    .support-box {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 14px 16px;
-    }
-
-    .support-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: #0f172a;
-      margin-bottom: 8px;
-    }
-
-    .support-list { list-style: none; padding: 0; }
-
-    .support-list li {
-      font-size: 12px;
-      color: #374151;
-      display: flex;
-      gap: 8px;
-      margin-bottom: 5px;
-    }
-
-    .support-list li::before { content: '·'; color: #94a3b8; font-weight: 700; }
-
-    /* ── Section spacing ── */
-    .mt8 { margin-top: 8px; }
-    .mt12 { margin-top: 12px; }
-
-    /* ── View toggle ── */
-    .view-toggle { display:flex; gap:6px; margin-bottom:20px; }
-    .vt-btn { padding:7px 16px; border-radius:20px; border:1px solid #e5e7eb; background:white; font-size:12px; font-weight:600; color:#6b7280; cursor:pointer; transition:all 0.15s; }
-    .vt-btn.active { background:#0f172a; color:white; border-color:#0f172a; }
-    .view-pane { display:none; }
-    .view-pane.active { display:block; }
-
-    /* ── Example view ── */
-    .ex-source-banner { background:#f0f9ff; border:1px solid #bae6fd; border-radius:8px; padding:10px 16px; margin-bottom:20px; font-size:12px; color:#0369a1; display:flex; align-items:center; gap:8px; }
-    .ex-article { background:white; border:1px solid #e5e7eb; border-radius:12px; padding:32px 36px; margin-bottom:20px; }
-    .ex-meta { font-size:11px; color:#9ca3af; margin-bottom:16px; }
-    .ex-title { font-size:24px; font-weight:800; color:#0f172a; margin-bottom:10px; line-height:1.2; }
-    .ex-summary { background:#eff6ff; border-left:3px solid #93c5fd; border-radius:0 6px 6px 0; padding:10px 14px; font-size:13px; color:#1e40af; margin-bottom:16px; line-height:1.5; }
-    .ex-intro { font-size:14px; color:#374151; line-height:1.7; margin-bottom:20px; }
-    .ex-section-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:#9ca3af; margin:24px 0 6px; }
-    .ex-h2 { font-size:16px; font-weight:700; color:#1f2937; margin:22px 0 8px; padding-bottom:6px; border-bottom:2px solid #f3f4f6; }
-    .ex-h3 { font-size:13px; font-weight:700; color:#374151; margin:14px 0 6px; }
-    .ex-p { font-size:13px; color:#374151; line-height:1.6; margin-bottom:8px; }
-    .ex-step-list { list-style:none; padding:0; }
-    .ex-step-list li { display:flex; gap:10px; margin-bottom:8px; font-size:13px; color:#374151; align-items:flex-start; }
-    .ex-step-num { min-width:20px; height:20px; background:#f97316; color:white; border-radius:50%; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
-    .ex-step-num.blue { background:#3b82f6; }
-    .ex-step-num.red { background:#ef4444; }
-    .ex-step-num.green { background:#10b981; }
-    .ex-step-num.amber { background:#d97706; }
-    .ex-bullet-list { list-style:none; padding:0; }
-    .ex-bullet-list li { display:flex; gap:8px; margin-bottom:6px; font-size:13px; color:#374151; }
-    .ex-bullet-list li::before { content:'•'; color:#f97316; font-weight:700; flex-shrink:0; }
-    .ex-field-list { list-style:none; padding:0; }
-    .ex-field-list li { display:flex; gap:0; margin-bottom:5px; font-size:13px; color:#374151; }
-    .ex-field-list li b { margin-right:6px; color:#111827; }
-    .ex-related-link { display:flex; align-items:center; gap:7px; font-size:13px; color:#f97316; margin-bottom:6px; }
-    .ex-related-link::before { content:'→'; font-weight:700; }
-    .ex-divider { height:1px; background:#f3f4f6; margin:16px 0; }
-    .ex-whats-next { background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:14px 16px; margin:10px 0; }
-    .ex-whats-next-title { font-size:12px; font-weight:700; color:#166534; margin-bottom:8px; }
-    .ex-whats-next li { font-size:13px; color:#15803d; margin-bottom:5px; display:flex; gap:8px; list-style:none; }
-    .ex-whats-next li::before { content:'→'; font-weight:700; }
-    .ex-verify { background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:14px 16px; margin:10px 0; }
-    .ex-verify-title { font-size:12px; font-weight:700; color:#1e40af; margin-bottom:8px; }
-    .ex-tier { border:1px solid #e5e7eb; border-radius:8px; margin-bottom:10px; overflow:hidden; }
-    .ex-tier-head { display:flex; align-items:center; gap:8px; padding:9px 14px; font-size:12px; font-weight:700; }
-    .ex-tier-1 .ex-tier-head { background:#f0fdf4; color:#166534; border-bottom:1px solid #dcfce7; }
-    .ex-tier-2 .ex-tier-head { background:#eff6ff; color:#1e40af; border-bottom:1px solid #dbeafe; }
-    .ex-tier-3 .ex-tier-head { background:#fefce8; color:#854d0e; border-bottom:1px solid #fef08a; }
-    .ex-tier-badge { font-size:10px; padding:1px 7px; border-radius:10px; font-weight:600; }
-    .ex-tier-1 .ex-tier-badge { background:#dcfce7; color:#166534; }
-    .ex-tier-2 .ex-tier-badge { background:#dbeafe; color:#1e40af; }
-    .ex-tier-3 .ex-tier-badge { background:#fef08a; color:#854d0e; }
-    .ex-tier-body { padding:12px 14px; background:white; }
-    .ex-error { border:1px solid #fecaca; border-radius:8px; overflow:hidden; margin-bottom:14px; }
-    .ex-error-head { background:#fff1f2; padding:10px 14px; border-bottom:1px solid #fecaca; font-size:13px; font-weight:700; color:#991b1b; }
-    .ex-error-body { padding:14px; }
-    .ex-error-meta { font-size:13px; color:#374151; margin-bottom:6px; }
-    .ex-support { background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:14px 16px; }
-    .ex-support-title { font-size:13px; font-weight:700; color:#0f172a; margin-bottom:8px; }
-    .ex-support li { font-size:12px; color:#374151; display:flex; gap:8px; margin-bottom:5px; list-style:none; }
-    .ex-support li::before { content:'·'; color:#94a3b8; font-weight:700; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suger: Help Center Templates</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --brand:#F05526;--brand-bg:#FEF0EA;--brand-text:#4A1500;
+  --bg:#F5F3EE;--surface:#FFFFFF;--s2:#EDEAE3;--s3:#E0DDD5;
+  --text:#111110;--t2:#4A4A48;--t3:#98988E;
+  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.16);--border3:rgba(0,0,0,0.28);
+  --b-bg:#EBF3FF;--b-t:#1558B0;--w-bg:#FFF6E0;--w-t:#7A4600;
+  --g-bg:#EDFAF2;--g-t:#186B38;--p-bg:#F3EFFE;--p-t:#5A1DB5;
+  --r:6px;--rl:10px;--rx:12px;
+}
+@media(prefers-color-scheme:dark){:root{
+  --brand:#F07845;--brand-bg:#301800;--brand-text:#F5D0B0;
+  --bg:#0C0C0A;--surface:#161614;--s2:#1E1E1C;--s3:#272725;
+  --text:#F0EDE8;--t2:#9A9A94;--t3:#545450;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);--border3:rgba(255,255,255,0.22);
+  --b-bg:#081630;--b-t:#82BAF5;--w-bg:#221400;--w-t:#F5C660;
+  --g-bg:#081A10;--g-t:#75D094;--p-bg:#110828;--p-t:#BA98F2;
+}}
+html,body{height:100%}
+body{font-family:"Plus Jakarta Sans",system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;font-size:15px;-webkit-font-smoothing:antialiased}
+.app-bar{height:52px;padding:0 28px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;display:flex;align-items:center}
+.logo-wrap{display:flex;align-items:center;gap:10px}
+.wordmark{font-size:18px;font-weight:800;letter-spacing:-.05em;color:var(--text);line-height:1}
+@media(prefers-color-scheme:dark){.wordmark{color:var(--brand)}}
+.logo-sep{width:1px;height:18px;background:var(--border2)}
+.logo-sub{font-size:13px;font-weight:500;color:var(--t2)}
+.main{max-width:920px;margin:0 auto;padding:28px 28px 64px;width:100%}
+.intro{margin-bottom:24px}.intro h1{font-size:22px;font-weight:800;letter-spacing:-.035em}
+.sec-lbl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin-bottom:11px}
+.card-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+.card-grid-1{display:grid;grid-template-columns:1fr;gap:10px}
+.tcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:16px 18px 14px;cursor:pointer;transition:border-color .15s;position:relative;overflow:hidden}
+.tcard::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--_accent);border-radius:var(--rl) 0 0 var(--rl)}
+.tcard:hover{border-color:var(--border3)}
+.card-head{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+.card-icon{width:30px;height:30px;border-radius:7px;background:var(--s2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;color:var(--_accent)}
+.card-name{font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.01em}
+.card-desc{font-size:12px;color:var(--t2);padding-left:40px;line-height:1.55;margin-bottom:4px}
+.card-ex{font-size:11px;color:var(--t3);padding-left:40px}
+.decision-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:12px}
+.dg-cell{padding:12px 14px;background:var(--surface);font-size:12px}
+.dg-cell strong{display:block;font-weight:700;color:var(--text);margin-bottom:3px}
+.dg-cell p{color:var(--t2);line-height:1.55}
+.flow-vis{display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 0}
+.flow-node{background:var(--s2);border:1px solid var(--border);border-radius:var(--r);padding:8px 16px;font-size:12px;font-weight:600;color:var(--text);text-align:center;min-width:130px}
+.flow-node.flow-solo{border-style:dashed;color:var(--t2);font-weight:500}
+.flow-sub{font-size:10px;font-weight:400;color:var(--t3);margin-top:2px}
+.flow-arrow{font-size:11px;color:var(--t3);text-align:center}
+.flow-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.cpan{border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:8px}
+.cpan-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--surface);font-size:13px;font-weight:600;cursor:pointer;user-select:none;color:var(--t2);transition:background .12s}
+.cpan-hdr:hover{background:var(--s2);color:var(--text)}.cpan-hdr.open{color:var(--text);border-bottom:1px solid var(--border)}
+.cpan-body{display:none}
+.rg{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
+.rc{padding:11px 14px;background:var(--surface)}
+.rh{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.rh i{font-size:13px;color:var(--t2)}.rh b{font-size:12px;font-weight:700;color:var(--text)}.rc p{font-size:11px;color:var(--t2);line-height:1.55;padding-left:19px}
+.rg-full{grid-column:1/-1;padding:11px 14px;background:var(--surface)}
+.co-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.cpill{font-size:12px;padding:5px 11px;border-radius:var(--r);flex:1;min-width:130px;line-height:1.5}
+.cp-n{background:var(--b-bg);color:var(--b-t)}.cp-t{background:var(--g-bg);color:var(--g-t)}.cp-w{background:var(--w-bg);color:var(--w-t)}.cp-x{background:var(--p-bg);color:var(--p-t)}
+.guide{background:var(--surface);border:1px solid var(--border);border-radius:var(--rx);overflow:hidden}
+.guide-top{display:flex;align-items:center;justify-content:space-between;padding:11px 20px;border-bottom:1px solid var(--border);gap:10px;flex-wrap:wrap}
+.back-btn{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--t2);border:none;background:none;cursor:pointer;font-family:inherit;padding:0;transition:color .12s}
+.back-btn:hover{color:var(--text)}
+.guide-meta{display:flex;align-items:center;gap:8px}
+.guide-name{font-size:14px;font-weight:700;letter-spacing:-.01em}
+.view-tabs{display:flex;background:var(--s2);border-radius:var(--r);padding:2px;gap:2px}
+.vtab{font-size:12px;font-weight:500;padding:4px 12px;border-radius:5px;border:none;background:transparent;color:var(--t2);cursor:pointer;font-family:inherit;transition:all .12s}
+.vtab:hover{color:var(--text)}.vtab.on{background:var(--surface);color:var(--text);font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.pbar{height:2px;background:var(--s2)}.pfill{height:100%;transition:width .3s}
+.guide-body{display:flex;min-height:500px}
+.g-sb{width:170px;min-width:170px;border-right:1px solid var(--border);padding:14px 8px;overflow-y:auto}
+.g-sb-lbl{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);margin:0 6px 10px;display:block}
+.si{display:flex;align-items:flex-start;gap:8px;padding:5px 7px;cursor:pointer;border-radius:var(--r);transition:background .1s}
+.si:hover,.si.on{background:var(--s2)}
+.sdot{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;margin-top:2px}
+.slb{font-size:12px;line-height:1.4;margin-top:1px}.slb.on{font-weight:700;color:var(--text)}.slb.off{color:var(--t2)}
+.g-con{flex:1;padding:22px;display:flex;flex-direction:column;min-width:0;overflow-y:auto}
+.sec-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.snum{font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.03em}
+.tags{display:flex;gap:5px;flex-wrap:wrap}
+.tag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap}
+.t-req{background:var(--b-bg);color:var(--b-t)}.t-opt{background:var(--s2);color:var(--t3)}
+.t-tit{background:var(--s3);color:var(--t2)}.t-tldr{background:var(--w-bg);color:var(--w-t)}
+.t-h1{background:var(--b-bg);color:var(--b-t)}.t-h2{background:var(--g-bg);color:var(--g-t)}
+.t-h3{background:var(--p-bg);color:var(--p-t)}.t-acc{background:var(--s2);color:var(--t2)}
+.t-fmt{background:var(--w-bg);color:var(--w-t)}
+.sec-title{font-size:20px;font-weight:800;letter-spacing:-.03em;color:var(--text);margin-bottom:4px}
+.sec-fmt-note{display:flex;gap:9px;align-items:flex-start;padding:10px 13px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);margin-bottom:14px;font-size:12px;color:var(--t2);line-height:1.6}
+.sfn-tag{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:1px}
+.blk{border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:12px}
+.blbl{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.blk-g{background:var(--bg)}.blk-e{background:var(--surface)}
+.bcon{font-size:13px;color:var(--t2);line-height:1.75}
+.bcon p{margin-bottom:10px}.bcon p:last-child{margin-bottom:0}
+.bcon ul,.bcon ol{padding-left:18px;margin:6px 0 10px}.bcon li{margin-bottom:5px;line-height:1.65}
+.bcon strong{color:var(--text);font-weight:600}.bcon em{font-style:italic;color:var(--t3);font-size:12px}
+.bcon code{font-family:"SF Mono",Monaco,monospace;font-size:11.5px;background:var(--s2);padding:1px 5px;border-radius:4px;color:var(--text)}
+.bsrc{font-size:11px;color:var(--t3);margin-top:10px;display:flex;align-items:center;gap:4px;padding-top:10px;border-top:1px solid var(--border)}
+.navrow{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:16px;border-top:1px solid var(--border)}
+.nav-btn{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:500;border:1px solid var(--border2);border-radius:var(--r);padding:6px 14px;background:var(--surface);color:var(--text);cursor:pointer;font-family:inherit;transition:background .12s}
+.nav-btn:hover:not(:disabled){background:var(--s2)}.nav-btn:disabled{opacity:.3;cursor:default}
+.cpy-btn{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;border:1px solid var(--border);border-radius:var(--r);padding:6px 14px;background:var(--s2);color:var(--t2);cursor:pointer;font-family:inherit;transition:all .12s}
+.cpy-btn:hover{background:var(--s3);color:var(--text)}
+.pv-banner{padding:9px 20px;background:var(--s2);border-bottom:1px solid var(--border);font-size:12px;color:var(--t2);display:flex;align-items:center;gap:6px}
+.pv-scroll{padding:32px 36px;overflow-y:auto;max-height:82vh}
+.art .art-title{font-size:28px;font-weight:800;letter-spacing:-.04em;color:var(--text);line-height:1.2;margin-bottom:10px}
+.art .tldr{background:var(--s2);border-left:3px solid var(--brand);border-radius:0 var(--r) var(--r) 0;padding:11px 14px;margin-bottom:24px;font-size:14px;color:var(--t2);line-height:1.65}
+.art .tldr strong{color:var(--brand);font-weight:700}
+.art h1{font-size:18px;font-weight:700;letter-spacing:-.02em;color:var(--text);margin:26px 0 10px;padding-bottom:7px;border-bottom:1px solid var(--border)}
+.art h2{font-size:16px;font-weight:700;letter-spacing:-.01em;color:var(--text);margin:18px 0 8px}
+.art h3{font-size:14px;font-weight:600;color:var(--text);margin:14px 0 6px}
+.art p{font-size:14px;color:var(--t2);line-height:1.75;margin-bottom:10px}
+.art ul,.art ol{padding-left:20px;margin-bottom:12px}
+.art li{font-size:14px;color:var(--t2);line-height:1.75;margin-bottom:5px}
+.art strong{color:var(--text);font-weight:600}
+.art code{font-family:"SF Mono",Monaco,monospace;font-size:11.5px;background:var(--s2);padding:1px 5px;border-radius:4px;color:var(--text)}
+.art table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px}
+.art th{text-align:left;padding:9px 12px;background:var(--s2);font-weight:700;font-size:11px;color:var(--t2);border:1px solid var(--border);letter-spacing:.03em;text-transform:uppercase}
+.art td{padding:9px 12px;border:1px solid var(--border);color:var(--t2);vertical-align:top;font-size:13px;line-height:1.6}
+.art .cal{border-radius:var(--r);padding:11px 14px;margin:12px 0;font-size:13px;line-height:1.65}
+.art .c-n{background:var(--b-bg);color:var(--b-t);border-left:3px solid var(--b-t)}
+.art .c-t{background:var(--g-bg);color:var(--g-t);border-left:3px solid var(--g-t)}
+.art .c-w{background:var(--w-bg);color:var(--w-t);border-left:3px solid var(--w-t)}
+.art .c-x{background:var(--p-bg);color:var(--p-t);border-left:3px solid var(--p-t)}
+.art details{border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px;overflow:hidden}
+.art details summary{padding:12px 16px;cursor:pointer;font-size:14px;font-weight:500;color:var(--text);list-style:none;display:flex;justify-content:space-between;align-items:center;background:var(--surface);user-select:none}
+.art details summary::-webkit-details-marker{display:none}
+.art details summary::after{content:"+";font-size:17px;font-weight:300;color:var(--t3);flex-shrink:0}
+.art details[open] summary{border-bottom:1px solid var(--border)}.art details[open] summary::after{content:"\2212"}
+.art .ab{padding:14px 16px;font-size:13px;color:var(--t2);line-height:1.75}
+.art .ab strong{color:var(--text)}.art .ab em{font-style:italic;color:var(--t3);font-size:12px}
+.art .ab ol,.art .ab ul{padding-left:18px;margin:6px 0 10px}.art .ab li{font-size:13px;line-height:1.65;margin-bottom:4px}
+.art .nlinks{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.art .nl{font-size:14px;color:var(--b-t)}
+@media(max-width:640px){
+  .app-bar{padding:0 16px}.main{padding:20px 16px 48px}
+  .card-grid,.decision-grid{grid-template-columns:1fr}.rg{grid-template-columns:1fr}
+  .g-sb{width:115px;min-width:115px}.g-con{padding:14px}.pv-scroll{padding:20px 16px}
+}
+
+</style>
 </head>
 <body>
-
-<!-- ══════════ SIDEBAR ══════════ -->
-<aside class="sidebar">
-  <div class="sidebar-brand">
-    <h1>Suger Help Center</h1>
-    <p>Article Templates · Internal use only</p>
+<header class="app-bar">
+  <div class="logo-wrap">
+    <span class="wordmark">suger</span>
+    <span class="logo-sep"></span>
+    <span class="logo-sub">Help Center Templates</span>
   </div>
+</header>
+<div class="main"><div id="app"></div></div>
+<script>
 
-  <div class="sidebar-section-label">Templates</div>
+function sfn(hl) {
+  const m = {
+    "st-title":["t-tit","Title","Styled text above the article body. No heading tag. 8 words or fewer."],
+    "st-tldr": ["t-tldr","TLDR block","No heading tag. Bold TLDR: as the label, then regular text follows on the same line. 1\u20132 sentences."],
+    "st-h1":   ["t-h1","H1","Every main section: Overview, Key terms, Prerequisites, step phases, Verify, What happens in [external system], Next steps, Frequently Asked Questions (FAQs), Troubleshooting."],
+    "st-h2":   ["t-h2","H2","Subsections within an H1 \u2014 a sub-phase, a configuration area, or a named sub-topic within a section."],
+    "st-h3":   ["t-h3","H3","Sub-subsections within an H2. Use sparingly. If you need H3 often, the article is probably too complex and should be split."],
+    "st-acc":  ["t-acc","Accordion","Inside Frequently Asked Questions (FAQs) and Troubleshooting H1 sections only. One accordion per question or per error."],
+  };
+  const d = m[hl] || m["st-h1"];
+  return `<div class="sec-fmt-note"><span class="sfn-tag ${d[0]}">${d[1]}</span><span>${d[2]}</span></div>`;
+}
 
-  <div class="sidebar-nav">
-    <div class="nav-item active" data-tab="howto" onclick="switchTab('howto', this)">
-      <span class="nav-dot dot-howto"></span> How-to
-    </div>
-    <div class="nav-item" data-tab="integration" onclick="switchTab('integration', this)">
-      <span class="nav-dot dot-integration"></span> Integration
-    </div>
-    <div class="nav-item" data-tab="overview" onclick="switchTab('overview', this)">
-      <span class="nav-dot dot-overview"></span> Overview / Hub
-    </div>
-    <div class="nav-item" data-tab="faq" onclick="switchTab('faq', this)">
-      <span class="nav-dot dot-faq"></span> FAQ
-    </div>
-    <div class="nav-item" data-tab="ts" onclick="switchTab('ts', this)">
-      <span class="nav-dot dot-ts"></span> Troubleshooting
-    </div>
-  </div>
+const T = [
+{name:"Base article anatomy", icon:"ti-layout-2", accent:"#F05526", badge:"base", group:"base",
+use:"The foundation every Suger article is built on. Start here before picking a specific type.",
+ex:"All article types follow this anatomy",
 
-  <div class="sidebar-section-label">Reference</div>
-  <div class="sidebar-nav">
-    <div class="nav-item" data-tab="callouts" onclick="switchTab('callouts', this)">
-      <span class="nav-dot" style="background:#64748b"></span> Callouts &amp; Tables
+preview:`
+<div class="art-title">Connect HubSpot to Suger</div>
+<div class="tldr"><strong>TLDR:</strong> Link HubSpot to Suger to automatically sync deals as co-sell referrals with AWS, Azure, and GCP. No manual data entry between systems.</div>
+
+<h1>Overview</h1>
+<p>The HubSpot integration keeps your deals and cloud partner co-sell programs in sync automatically. When a deal updates in HubSpot, it flows into Suger, so your sales team can work entirely from their CRM without switching tools.</p>
+
+<h1>Key terms</h1>
+<table><thead><tr><th>Term</th><th>What it means</th></tr></thead><tbody>
+<tr><td><strong>Co-sell referral</strong></td><td>A deal submitted to a cloud partner (AWS, Azure, GCP) for joint pursuit. Suger creates and tracks these from your CRM.</td></tr>
+<tr><td><strong>Integration user</strong></td><td>A dedicated, non-personal HubSpot account used by Suger to read and write data. Using a dedicated account prevents disruption if a personal account is deactivated.</td></tr>
+</tbody></table>
+
+<h1>Prerequisites</h1>
+<ul>
+<li>HubSpot account with Admin access</li>
+<li>A dedicated integration user with view and edit permissions on contacts, companies, and deals, plus App Marketplace access</li>
+<li>Suger account with Integration Manager role</li>
+</ul>
+
+<h1>Connect HubSpot</h1>
+<ol>
+<li>In Suger, go to <strong>Settings</strong> &rarr; <strong>Integrations</strong> and click <strong>+ Connect</strong>.</li>
+<li>Select <strong>HubSpot</strong> from the list.</li>
+<li>Log in with your integration user when the authorization page opens.</li>
+<li>Select your account, then click <strong>Choose Account</strong>.</li>
+<li>Review permissions, then click <strong>Connect App</strong>.</li>
+<li>Back in Suger, find HubSpot and click <strong>Verify</strong>.</li>
+</ol>
+
+<h1>Verify your connection</h1>
+<p>After clicking Verify, the status updates to <strong>Verified</strong> in Settings &rarr; Integrations. If it stays at Pending, confirm the integration user has read access to at least one HubSpot deal, then click Verify again.</p>
+<div class="cal c-t">&#x1F4A1; <strong>Tip:</strong> Test by syncing one deal manually before going fully live. This confirms field mapping is working before the integration runs automatically.</div>
+
+<h1>Next steps</h1>
+<p>With HubSpot connected, push your first deal to a cloud partner co-sell program. Follow <em>Create a co-sell referral from HubSpot</em>.</p>
+
+<h1>Frequently Asked Questions (FAQs)</h1>
+<details><summary>Q: Can I connect more than one HubSpot account?</summary>
+<div class="ab">A: No. Suger supports one HubSpot account per organization. To switch, delete the existing integration and reconnect with the new account.</div></details>
+
+<h1>Troubleshooting</h1>
+<details><summary>Error: &#x22;Authorization failed&#x22;</summary>
+<div class="ab">Your integration user may be missing App Marketplace access. In HubSpot, go to <strong>Settings</strong> &rarr; <strong>Users</strong> &rarr; <strong>Permissions</strong> and confirm App Marketplace access is enabled, then try connecting again.</div></details>
+`,
+
+s:[
+{n:"01", name:"Title", req:1, hl:"st-title",
+ fmt:"No heading tag · 8 words or fewer",
+ g:`<p>Every Suger article starts with a title above the article body. No heading tag is applied to it in the CMS.</p>
+<ul>
+<li>8 words or fewer</li>
+<li>For task-based and integration articles: action verb first (Connect, Create, Set up)</li>
+<li>For reference, hub, FAQ, and troubleshooting articles: noun phrase (Products in Suger, HubSpot CRM enrichment fields)</li>
+<li>What matters most is consistency within each article type. All integration articles should follow the same title pattern. All hub articles should follow the same pattern.</li>
+<li>No "How to" at the start. No words ending in -ing. No period at the end.</li>
+</ul>`,
+ ex:'"Connect HubSpot to Suger" (integration) &middot; "Products in Suger" (hub) &middot; "HubSpot CRM enrichment fields" (reference)', src:"standard anatomy"},
+
+{n:"02", name:"TLDR", req:1, hl:"st-tldr",
+ fmt:"No heading tag · bold TLDR: label, regular text follows · 1–2 sentences",
+ g:`<p>The TLDR sits directly below the title. It's the one-sentence version of what the article covers before the reader commits to reading it.</p>
+<ul>
+<li>Format: <strong>TLDR:</strong> in bold, followed by regular text on the same line. No heading tag.</li>
+<li>1 to 2 sentences. Name Suger and the tool, feature, or workflow.</li>
+<li>Lead with the outcome, not the feature. "Link HubSpot to Suger to sync deals automatically" beats "This article explains the HubSpot integration."</li>
+<li>Don't start with "In this article," "This guide covers," or "Welcome to."</li>
+</ul>`,
+ ex:'"TLDR: Link HubSpot to Suger to automatically sync deals as co-sell referrals with AWS, Azure, and GCP. No manual data entry between systems."', src:"standard anatomy"},
+
+{n:"03", name:"Overview", req:1, hl:"st-h1",
+ fmt:"H1 · 2–4 sentences · user benefit first",
+ g:`<p>Overview is the first H1 in every Suger article. It sets up what the reader's about to learn or do.</p>
+<ul>
+<li>Lead with what the user gets out of this, not what the feature does</li>
+<li>Task articles: explain what the task achieves and why someone would do it</li>
+<li>Hub articles: introduce the section and say this article links out to related task articles</li>
+<li>Reference articles: explain what the data represents and who uses it</li>
+<li>Don't describe steps here &mdash; that belongs in the body sections</li>
+</ul>
+<p><strong>On parallelism:</strong> "Overview" and "Prerequisites" are both noun-based section headers, and that's fine. What matters is that all H1 sections within the same article follow the same naming pattern. Don't mix "Overview" (noun) with "Connecting the integration" (gerund) in the same article.</p>`,
+ ex:'"The HubSpot integration keeps your deals and cloud partner co-sell programs in sync automatically. Your sales team can work entirely from their CRM without switching tools."', src:"standard anatomy"},
+
+{n:"04", name:"Key terms", req:0, hl:"st-h1",
+ fmt:"H1 · 2-column table: Term | What it means · optional",
+ g:`<p>Add this section when the article uses technical terms, Suger-specific concepts, or acronyms the reader might not know going in. Skip it when every term is self-explanatory.</p>
+<ul>
+<li>Two-column table: Term on the left, definition on the right</li>
+<li>One sentence per definition &mdash; plain and brief</li>
+<li>Placement: after Overview, before the first major body section (Prerequisites or the first step phase)</li>
+<li>Good candidates: integration-specific concepts, Suger-specific terminology, cloud marketplace jargon, acronyms that aren't industry-standard</li>
+</ul>`,
+ ex:'"Co-sell referral: A deal submitted to a cloud partner for joint pursuit." Simple table row, no definition-list formatting.', src:"standard anatomy"},
+
+{n:"05", name:"Body sections", req:1, hl:"st-h1",
+ fmt:"H1 per main section · H2 per subsection · H3 for sub-subsections (sparingly)",
+ g:`<p>The body is where the content lives. What goes here depends on the article type &mdash; see the specific template for details.</p>
+<ul>
+<li>H1 for every main section. All H1s in the same article should be at the same level of importance and follow a consistent naming pattern.</li>
+<li>H2 for subsections within an H1 (a sub-phase, a configuration area, a named sub-topic)</li>
+<li>H3 only when H2 isn't enough. Frequent H3 use is usually a sign the article should be split.</li>
+</ul>`,
+ ex:"Integration setup body: Prerequisites &rarr; Connect [Tool] &rarr; Verify your connection &rarr; Manage the connection", src:"standard anatomy"},
+
+{n:"06", name:"Next steps", req:0, hl:"st-h1",
+ fmt:"H1 · 1–2 sentences · only when there's a clear follow-on action",
+ g:`<p>Add Next steps only when completing this article leads directly to a logical next action. If the article is self-contained, skip this section.</p>
+<ul>
+<li>1 to 2 sentences pointing to the next task or article</li>
+<li>Use the exact article title as link text</li>
+</ul>`,
+ ex:'"With HubSpot connected, push your first deal to a cloud partner co-sell program. Follow Create a co-sell referral from HubSpot."', src:"standard anatomy"},
+
+{n:"07", name:"Frequently Asked Questions (FAQs)", req:0, hl:"st-acc",
+ fmt:"H1 · accordion items · Q: on summary line · A: in body · 5 items max",
+ g:`<p>Add at the end when you have common questions that don't fit elsewhere in the content.</p>
+<ul>
+<li><strong>Q:</strong> on the accordion summary line, phrased as the user would actually ask it</li>
+<li><strong>A:</strong> in the body &mdash; lead with the direct answer (yes, no, or the action) before any explanation</li>
+<li>1 to 2 sentences per answer. If it needs more, link to another article instead.</li>
+<li>Only include questions users have actually asked. No ghost questions invented to fill space.</li>
+<li>More than 5 questions, or questions spanning multiple subtopics? Create a standalone Frequently Asked Questions (FAQs) article.</li>
+</ul>`,
+ ex:'"Q: Can I connect more than one HubSpot account?\nA: No. Suger supports one account per organization. Delete and reconnect to switch."', src:"standard anatomy"},
+
+{n:"08", name:"Troubleshooting", req:0, hl:"st-acc",
+ fmt:"H1 · accordion items · exact error on summary line · 5 items max",
+ g:`<p>Add at the end when you have common, recurring errors to document.</p>
+<ul>
+<li>Use the exact error message from the screen as the accordion summary line</li>
+<li>For errors with multiple causes: list fixes from simplest to most complex. Before each fix, one sentence on why it's likely the cause.</li>
+<li>More than 5 errors, or fixes that need many steps? Create a standalone Troubleshooting guide.</li>
+</ul>`,
+ ex:'"Error: Authorization failed" (accordion header) &rarr; cause context &rarr; Fix 1 (why: most common) &rarr; steps', src:"standard anatomy"},
+]},
+
+/* ─────────────────────────────────────────────
+   1. INTEGRATION SETUP
+───────────────────────────────────────────── */
+{name:'Integration setup', icon:'ti-plug-connected', accent:'#C2590A', badge:'Core', group:'main',
+use:'Connecting Suger to an external tool or system',
+ex:'Connect HubSpot, set up Datadog, link Salesforce',
+
+preview:`
+<div class="art-title">Connect HubSpot to Suger</div>
+<div class="tldr"><strong>TLDR:</strong> Link HubSpot to Suger to automatically sync deals as co-sell referrals with AWS and other cloud partners. No manual data entry between systems.</div>
+
+<h1>Overview</h1>
+<p>The HubSpot integration automatically keeps your HubSpot deals in sync with cloud partner co-sell programs. When a deal updates in HubSpot, it flows into Suger. When co-sell status changes in a cloud partner program like AWS ACE, it syncs back to HubSpot, so your sales team can work entirely in their CRM without checking the Suger dashboard.</p>
+<div class="cal c-n">📌 <strong>Note:</strong> Suger performs all HubSpot actions using the dedicated integration user you set up. Any Suger-driven activity appears under that user&#39;s name in your HubSpot audit log.</div>
+
+<h1>Who sets up what</h1>
+<table><thead><tr><th>Admin setup (one-time)</th><th>User setup</th></tr></thead>
+<tbody>
+<tr><td>Create a dedicated HubSpot integration user</td><td rowspan="2" style="vertical-align:middle">No additional setup required</td></tr>
+<tr><td>Connect and verify HubSpot in Suger Settings</td></tr>
+</tbody></table>
+
+<h1>Prerequisites</h1>
+<ul>
+<li>HubSpot account with Admin access</li>
+<li>A dedicated integration user (not a personal account) with view and edit permissions on contacts, companies, and deals, plus App Marketplace access</li>
+<li>Suger account with Integration Manager role</li>
+</ul>
+
+<h1>Connect HubSpot</h1>
+<ol>
+<li>In Suger, go to <strong>Settings</strong> &rarr; <strong>Integrations</strong> and click <strong>+ Connect</strong>.</li>
+<li>Select <strong>HubSpot</strong> from the integration list.</li>
+<li>Log in with your integration user when the HubSpot authorization page opens.</li>
+<li>Select your account, then click <strong>Choose Account</strong>.</li>
+<li>Review the requested permissions, then click <strong>Connect App</strong>.</li>
+<li>Back in Suger, find HubSpot in the list and click <strong>Verify</strong>.</li>
+</ol>
+
+<h1>Verify your connection</h1>
+<p>After clicking Verify, the integration status updates to <strong>Verified</strong> in Settings &rarr; Integrations. If it stays at <strong>Pending</strong>, confirm the integration user has read access to at least one HubSpot deal, then click <strong>Verify</strong> again.</p>
+<div class="cal c-t">&#x1F4A1; <strong>Tip:</strong> Before going fully live, test by syncing one deal manually. This confirms field mapping is working before the integration runs automatically.</div>
+
+<h1>Manage the connection</h1>
+<p>To update the integration user or re-authenticate, go to <strong>Settings</strong> &rarr; <strong>Integrations</strong> &rarr; <strong>HubSpot</strong> &rarr; <strong>Edit</strong>.</p>
+<div class="cal c-w">&#x26A0;&#xFE0F; <strong>Warning:</strong> Deleting the HubSpot integration immediately stops all co-sell syncing. Existing records in Suger are kept, but no new updates will sync until you reconnect.</div>
+
+<h1>Next steps</h1>
+<p>With HubSpot connected, push your first deal to a cloud partner co-sell program. Follow <em>Create a co-sell referral from HubSpot</em>.</p>
+
+<h1>Frequently Asked Questions (FAQs)</h1>
+<details><summary>Q: Can I connect more than one HubSpot account?</summary>
+<div class="ab">A: No. Suger supports one HubSpot account per organization. To switch, delete the existing integration and reconnect with the new account.</div></details>
+<details><summary>Q: How often does Suger sync with HubSpot?</summary>
+<div class="ab">A: Deal updates sync in real time. CRM Enrichment data refreshes every 12 hours at midnight and noon UTC.</div></details>
+
+<h1>Troubleshooting</h1>
+<details><summary>Error: &#x22;Authorization failed&#x22;</summary>
+<div class="ab">
+<p>This error usually means the integration user is missing a required permission.</p>
+<p><strong>Fix 1: Confirm App Marketplace access</strong></p>
+<em>Why start here: This is the most frequently missing permission. The integration user often has CRM access but not App Marketplace access, which is required to authorize the Suger app.</em>
+<ol>
+<li>In HubSpot, go to <strong>Settings</strong> &rarr; <strong>Users</strong> &rarr; <strong>Permissions</strong>.</li>
+<li>Find the integration user and confirm <strong>App Marketplace access</strong> is enabled.</li>
+<li>Return to Suger and try connecting again.</li>
+</ol>
+<div class="fix-div">
+<p><strong>Fix 2: Re-invite the integration user</strong></p>
+<em>Why try this next: Permission changes do not always propagate to active sessions. Re-inviting forces a clean session with the updated permissions applied.</em>
+<ol>
+<li>In HubSpot, deactivate and re-invite the integration user.</li>
+<li>Accept the invitation and confirm permissions are correct.</li>
+<li>Return to Suger and reconnect from Settings &rarr; Integrations.</li>
+</ol>
+</div>
+</div></details>
+<details><summary>Error: Status stays &#x22;Pending&#x22; after clicking Verify</summary>
+<div class="ab">
+<p>Verify requires Suger to read at least one deal to confirm access. If the integration user has no readable deals, Verify cannot complete.</p>
+<p><strong>Fix 1: Confirm deal access</strong></p>
+<em>Why start here: The integration user must have read access to at least one deal. No visible deals means Verify will always fail.</em>
+<ol>
+<li>In HubSpot, confirm the integration user can view at least one deal record.</li>
+<li>Click <strong>Verify</strong> again in Suger Settings &rarr; Integrations.</li>
+</ol>
+</div></details>
+`,
+
+s:[
+{n:'01', name:'Title', req:1, hl:'st-title',
+ fmt:'No heading tag · "Connect [Tool] to Suger" · 8 words or fewer',
+ g:`<p>Use an action verb as the first word: <strong>Connect</strong>, <strong>Set up</strong>, or <strong>Integrate</strong>. Follow with the tool name.</p>
+<ul>
+<li>Keep the title under 8 words</li>
+<li>Skip "How to" at the start</li>
+<li>No words ending in -ing (gerunds)</li>
+<li>Match how a user would search for this task directly by tool name</li>
+</ul>`,
+ ex:'"Connect HubSpot to Suger"', src:'doc.suger.io/integrations/hubspot'},
+
+{n:'02', name:'TLDR', req:1, hl:'st-tldr',
+ fmt:'No heading tag · starts with "TLDR:" · 1 sentence',
+ g:`<p>Write one sentence naming Suger and the tool, and what the user gains once connected.</p>
+<ul>
+<li>Start with <strong>TLDR:</strong> on the same line, no heading tag</li>
+<li>Don't start with "In this article" or "This guide covers"</li>
+<li>Lead with what the user achieves, not what the feature does</li>
+</ul>`,
+ ex:'"TLDR: Link HubSpot to Suger to automatically sync deals as co-sell referrals with AWS and other cloud partners. No manual data entry between systems."', src:'doc.suger.io/integrations/hubspot'},
+
+{n:'03', name:'Overview', req:1, hl:'st-h1',
+ fmt:'H1 · 2 to 4 sentences · user benefit first',
+ g:`<p>Lead with what the user gains from this integration, not what the feature does. Explain the sync direction (one-way or two-way) and timing (real time or scheduled).</p>
+<ul>
+<li>Don't describe any steps here</li>
+<li>Focus on the workflow the integration enables, not the technical mechanism</li>
+</ul>`,
+ ex:'"The HubSpot integration automatically keeps your HubSpot deals in sync with cloud partner co-sell programs. When a deal updates in HubSpot, it flows into Suger, so your sales team can work entirely in their CRM."', src:'doc.suger.io/integrations/hubspot'},
+
+{n:'04', name:'Who sets up what', req:1, hl:'st-h1',
+ fmt:'H1 · 2-column table: Admin setup (one-time) | User setup',
+ g:`<p>Use a two-column table. Label the columns exactly: <strong>Admin setup (one-time)</strong> and <strong>User setup</strong>.</p>
+<ul>
+<li>If individual users need no additional setup, write "No additional setup required" in the User setup column</li>
+<li>This section prevents most integration-related support tickets. Reps often do not know whether they need to do anything after their admin connects the tool</li>
+</ul>`,
+ ex:'Table row: Admin: "Connect and verify HubSpot in Suger Settings" / User: "No additional setup required"', src:'doc.suger.io/integrations/hubspot'},
+
+{n:'05', name:'Prerequisites', req:1, hl:'st-h1',
+ fmt:'H1 · bulleted list · noun phrases · parallel structure',
+ g:`<p>Write each item as a noun phrase, not a sentence. All items must start with the same type of word.</p>
+<ul>
+<li>No "You need" or "Make sure" at the start of any item</li>
+<li>If a prerequisite requires its own setup process, link to that article directly</li>
+</ul>`,
+ ex:'Parallel noun phrases: "HubSpot account with Admin access" · "A dedicated integration user with view and edit permissions on contacts, companies, and deals, plus App Marketplace access" · "Suger account with Integration Manager role"', src:'doc.suger.io/integrations/hubspot'},
+
+{n:'06', name:'Connect [Tool]', req:1, hl:'st-h1',
+ fmt:'H1 · numbered list · H2 for phases if more than 7 steps',
+ g:`<p>Start every step with an action verb: <strong>Click</strong>, <strong>Select</strong>, <strong>Enter</strong>, <strong>Go to</strong>. Bold each UI element exactly as it appears in the product.</p>
+<ul>
+<li>Tell users what they see after each key action: status changes, confirmation screens, new tabs opening</li>
+<li>Use H2 headings to group phases only when there are more than 7 steps total</li>
+<li>If using phases, each H2 gets its own numbered list starting from 1</li>
+</ul>`,
+ ex:'1. "In Suger, go to Settings &rarr; Integrations and click + Connect." 2. "Select HubSpot from the list." Each step is one action, starts with a verb, bolds UI labels.', src:'doc.suger.io/integrations/hubspot'},
+
+{n:'07', name:'Verify your connection', req:1, hl:'st-h1',
+ fmt:'H1 · 1 to 3 sentences · names the specific success indicator',
+ g:`<p>Required in every integration article. Tell the user exactly what success looks like.</p>
+<ul>
+<li>Name the specific status label, indicator, or screen to check</li>
+<li>Add a Tip callout with a low-risk way to test the connection before relying on it in production</li>
+</ul>`,
+ ex:'"After clicking Verify, the status updates to Verified in Settings &rarr; Integrations. If it stays Pending, confirm the integration user has read access to at least one deal."', src:'standard integration anatomy'},
+
+{n:'08', name:'Manage the connection', req:1, hl:'st-h1',
+ fmt:'H1 · update steps + Warning callout for destructive actions',
+ g:`<p>Explain what can be changed after the initial setup and how to do it.</p>
+<ul>
+<li>Use a <strong>Warning callout</strong> for any action that is destructive or can't be undone</li>
+<li>Name specifically what stops working, what data is affected, and whether the action is reversible</li>
+</ul>`,
+ ex:'"Warning: Deleting the HubSpot integration immediately stops all co-sell syncing. Existing Suger records are kept, but no new updates will sync until you reconnect."', src:'doc.suger.io/integrations/hubspot'},
+
+{n:'09', name:'Next steps', req:0, hl:'st-h1',
+ fmt:'H1 · 1 to 2 sentences · only when there is a clear next action',
+ g:`<p>Add this section only when connecting this integration leads directly to a follow-on task. Skip it if there is no clear next action for the user to take.</p>`,
+ ex:'"With HubSpot connected, push your first deal to a cloud partner co-sell program. Follow Create a co-sell referral from HubSpot."', src:'standard integration anatomy'},
+
+{n:'10', name:'Frequently Asked Questions (FAQs)', req:0, hl:'st-acc',
+ fmt:'H1 · accordion items · Q: on summary line · A: in body · 5 items maximum',
+ g:`<p>Only include questions users have actually asked. Format every item the same way:</p>
+<ul>
+<li><strong>Q:</strong> on the accordion summary line, phrased as the user would ask it</li>
+<li><strong>A:</strong> in the accordion body, leading with the direct answer (yes, no, or the specific action) before any explanation</li>
+<li>Keep answers to 1 to 2 sentences</li>
+<li>If you have more than 5 questions, create a separate Frequently Asked Questions (FAQs) article</li>
+</ul>`,
+ ex:'"Q: Can I connect more than one HubSpot account?\\nA: No. Suger supports one account per organization. Delete and reconnect to switch."', src:'common HubSpot support questions'},
+
+{n:'11', name:'Troubleshooting', req:0, hl:'st-acc',
+ fmt:'H1 · accordion items · exact error on summary line · 5 items maximum',
+ g:`<p>Use the exact error message the user sees on screen as the accordion header. Structure each accordion body the same way:</p>
+<ul>
+<li>Start with one sentence explaining what causes this class of error</li>
+<li>For errors with multiple possible causes: list fixes from simplest to most complex</li>
+<li>Before each fix: one sentence explaining why it is likely the cause, beginning with "Why start here:" or "Why try this next:"</li>
+<li>This helps users pick the right fix without trying every option</li>
+<li>If you have more than 5 errors, create a separate Troubleshooting guide</li>
+</ul>`,
+ ex:'"Error: Authorization failed" &rarr; cause context &rarr; Fix 1 (why: most common) &rarr; steps &rarr; Fix 2 (why: try if Fix 1 fails) &rarr; steps.', src:'common HubSpot integration errors'},
+]},
+
+
+/* ─────────────────────────────────────────────
+   2. TASK-BASED
+───────────────────────────────────────────── */
+{name:'Task-based (How-to)', icon:'ti-list-numbers', accent:'#1558B0', badge:'Core', group:'main',
+use:'Step-by-step guide for a specific task, including end-to-end flows spanning multiple systems',
+ex:'Create a private offer, add a user, report usage, process a refund',
+
+preview:`
+<div class="art-title">Create a private offer in AWS Marketplace</div>
+<div class="tldr"><strong>TLDR:</strong> Send a custom-priced deal to a specific buyer through AWS Marketplace using Suger. This guide covers the full flow from offer creation in Suger to buyer acceptance in AWS.</div>
+
+<h1>Overview</h1>
+<p>A private offer lets you negotiate custom pricing, contract length, and payment schedule for a specific buyer. This guide covers the complete flow: creating and configuring the offer in Suger, sending it to the buyer, and what happens next in AWS Marketplace.</p>
+
+<h1>Prerequisites</h1>
+<ul>
+<li>AWS Marketplace integration connected and verified in Suger</li>
+<li>Product listed and live in AWS Marketplace</li>
+<li>Suger account with Offer Manager role</li>
+<li>Buyer&#39;s AWS Account ID</li>
+</ul>
+
+<h1>Step 1: Create the offer</h1>
+<ol>
+<li>In Suger, go to <strong>Offers</strong> and click <strong>+ New Offer</strong>.</li>
+<li>Select <strong>AWS Marketplace</strong> as the marketplace.</li>
+<li>Select <strong>Private Offer</strong> as the offer type.</li>
+<li>Search for and select your product.</li>
+</ol>
+
+<h1>Step 2: Set pricing and terms</h1>
+<ol>
+<li>Enter an <strong>Offer Name</strong>. This is an internal reference only. The buyer will not see it.</li>
+<li>Set the contract duration, start date, and payment schedule.</li>
+<li>Configure the pricing dimensions.</li>
+</ol>
+<div class="cal c-n">&#x1F4CC; <strong>Note:</strong> If your product uses usage-based billing, add a $0.01 placeholder dimension. AWS locks pricing dimensions once a listing is live. This placeholder lets you add overage billing later without creating a new listing.</div>
+
+<h1>Step 3: Send to buyer</h1>
+<ol>
+<li>Enter the buyer&#39;s <strong>AWS Account ID</strong>.</li>
+<li>Review all offer details, then click <strong>Create Offer</strong>.</li>
+<li>Click <strong>Send to Buyer</strong>.</li>
+</ol>
+
+<h1>What happens in AWS Marketplace</h1>
+<div class="cal c-x">&#x1F4CB; <strong>The next step happens in AWS Marketplace, not in Suger.</strong> We link to the acceptance guide rather than documenting those steps here. AWS controls their console interface and may update it at any time. Documenting those steps in this article would make it unreliable every time AWS makes a change.</div>
+<p>Once you send the offer, AWS automatically emails the buyer with acceptance instructions. The buyer completes acceptance in their own AWS Marketplace account.</p>
+<div class="nlinks"><span class="nl">&rarr; Accept a private offer in AWS Marketplace</span></div>
+
+<h1>Verify acceptance in Suger</h1>
+<p>After the buyer accepts, the offer status in Suger updates from <strong>PENDING_ACCEPTANCE</strong> to <strong>ACTIVE</strong> in the Offers dashboard. This typically happens within a few minutes of the buyer completing acceptance.</p>
+
+<h1>Next steps</h1>
+<p>With the offer active, you can track usage and billing from the Suger dashboard. If your product uses usage-based pricing, start reporting metering so the buyer is billed correctly. See <em>Report usage for AWS Marketplace</em>.</p>
+
+<h1>Frequently Asked Questions (FAQs)</h1>
+<details><summary>Q: Can I edit an offer after sending it to the buyer?</summary>
+<div class="ab">A: No. Once sent, offer terms are locked. Expire the existing offer and create a new one with the updated terms.</div></details>
+<details><summary>Q: How long does the buyer have to accept?</summary>
+<div class="ab">A: AWS private offers expire after 45 days by default. You can set a shorter expiration date during offer creation in Suger.</div></details>
+
+<h1>Troubleshooting</h1>
+<details><summary>Error: &#x22;Product not eligible for private offer&#x22;</summary>
+<div class="ab">
+<p>This error means the product is not in a state that allows private offers to be created.</p>
+<p><strong>Fix 1: Check the product&#39;s listing status</strong></p>
+<em>Why start here: The product must be Live in AWS Marketplace before Suger can create private offers for it. A product in Draft or Pending review will always trigger this error.</em>
+<ol>
+<li>In Suger, go to <strong>Products</strong> &rarr; <strong>AWS Marketplace</strong>.</li>
+<li>Check the product&#39;s status. If it shows Draft or Pending review, wait for AWS approval before creating offers.</li>
+</ol>
+<div class="fix-div">
+<p><strong>Fix 2: Confirm the product is linked to an active listing</strong></p>
+<em>Why try this next: If the product exists in Suger but is not linked to a live AWS Marketplace listing, Suger cannot create offers even if the status shows Live internally.</em>
+<ol>
+<li>Open the product in Suger and go to <strong>Marketplace settings</strong>.</li>
+<li>Confirm the AWS Marketplace listing ID is populated and matches an active listing in your AWS Marketplace Management Portal.</li>
+</ol>
+</div>
+</div></details>
+`,
+
+s:[
+{n:'01', name:'Title', req:1, hl:'st-title',
+ fmt:'No heading tag · action verb · 8 words or fewer',
+ g:`<p>Use an action verb as the first word: <strong>Create</strong>, <strong>Add</strong>, <strong>Configure</strong>, <strong>Sync</strong>, <strong>Process</strong>. Keep under 8 words. Skip "How to" and words ending in -ing.</p>
+<p>For end-to-end flows spanning multiple systems: the title still reflects the starting action. The Overview will clarify the full scope of the article.</p>`,
+ ex:'"Create a private offer in AWS Marketplace"', src:'doc.suger.io/aws-marketplace'},
+
+{n:'02', name:'TLDR', req:1, hl:'st-tldr',
+ fmt:'No heading tag · starts with "TLDR:" · 1 to 2 sentences',
+ g:`<p>Name Suger and the marketplace or tool. State what the user accomplishes.</p>
+<ul>
+<li>For end-to-end flows: say where the flow starts and where it ends, so the reader knows the full scope before starting</li>
+<li>Begin with <strong>TLDR:</strong> on the same line. No heading tag</li>
+</ul>`,
+ ex:'"TLDR: Send a custom-priced deal to a specific buyer through AWS Marketplace using Suger. This guide covers the full flow from offer creation in Suger to buyer acceptance in AWS."', src:'doc.suger.io/aws-marketplace'},
+
+{n:'03', name:'Overview', req:1, hl:'st-h1',
+ fmt:'H1 · 2 to 4 sentences · include scope for end-to-end flows',
+ g:`<p>Explain what this task achieves and why a user would do it. Don't describe any steps here.</p>
+<p>For end-to-end flows spanning multiple systems: say so explicitly in the Overview. Tell the reader upfront that this guide covers everything from start to finish, including steps that happen outside Suger.</p>`,
+ ex:'"This guide covers the complete flow: creating and configuring the offer in Suger, sending it to the buyer, and what happens next in AWS Marketplace."', src:'doc.suger.io/aws-marketplace'},
+
+{n:'04', name:'Prerequisites', req:1, hl:'st-h1',
+ fmt:'H1 · bulleted list · noun phrases · parallel structure',
+ g:`<p>Write each item as a noun phrase. All items must start with the same type of word. Include every role, integration status, and piece of data the user needs before starting.</p>
+<ul>
+<li>No "You need" or "Make sure" at the start of any item</li>
+<li>Link to any setup article required for a prerequisite</li>
+</ul>`,
+ ex:'Parallel noun phrases: "AWS Marketplace integration connected and verified in Suger" · "Product listed and live in AWS Marketplace" · "Buyer\'s AWS Account ID"', src:'doc.suger.io/aws-marketplace'},
+
+{n:'05', name:'Step [N]: [Phase name]', req:1, hl:'st-h1',
+ fmt:'H1 per phase, named "Step [N]: [goal]" · numbered list restarts from 1 under each H1',
+ g:`<p>Name each phase as: <strong>Step 1: Create the offer</strong>, <strong>Step 2: Set pricing and terms</strong>, and so on. Each phase gets its own H1 heading.</p>
+<ul>
+<li>The numbered list under each H1 starts from 1</li>
+<li>Start each step with an action verb. Bold every UI element as it appears in the product</li>
+<li>Put Warning callouts before the step they affect, not after</li>
+</ul>
+<p><strong>What counts as a phase:</strong> A phase is a group of steps sharing the same goal. If your task has fewer than 6 steps in one system, you don't need phases. Use one numbered list under one H1.</p>`,
+ ex:'"Step 1: Create the offer" (H1) &rarr; numbered list from 1. "Step 2: Set pricing" (H1) &rarr; new list from 1. Each phase has its own numbered sequence.', src:'doc.suger.io/aws-marketplace'},
+
+{n:'06', name:'What happens in [external system]', req:0, hl:'st-h1',
+ fmt:'H1 · cross-system callout · 1 to 2 sentences · link to external article',
+ g:`<p>Use this section when a step in the workflow requires action in an external system, such as a buyer accepting in AWS or an admin approving in a cloud portal.</p>
+<ul>
+<li>Add a cross-system callout explaining that this step occurs outside Suger and that you are linking rather than documenting it</li>
+<li>Don't document the external steps yourself. The external system controls that interface and may update it at any time. Documenting those steps here would make this article inaccurate whenever the external system changes</li>
+<li>Link to the relevant acceptance or approval article</li>
+</ul>`,
+ ex:'"This step happens in AWS Marketplace, not in Suger. We link to the acceptance guide rather than documenting those steps here. AWS controls their console interface and may update it at any time." Then: a link to the acceptance guide.', src:'doc.suger.io/aws-marketplace/accept-private-offer'},
+
+{n:'07', name:'Verify success', req:1, hl:'st-h1',
+ fmt:'H1 · 1 to 3 sentences · names exact status or indicator',
+ g:`<p>Required for every task-based article. State exactly what success looks like. Name the status label, field, or screen that confirms the task completed.</p>
+<p>For end-to-end flows: verify from within Suger, even if the last action happened in an external system. Tell the user what the Suger dashboard shows after the full flow completes.</p>`,
+ ex:'"After the buyer accepts, the offer status in Suger updates from PENDING_ACCEPTANCE to ACTIVE in the Offers dashboard. This typically happens within a few minutes."', src:'doc.suger.io/aws-marketplace'},
+
+{n:'08', name:'Next steps', req:0, hl:'st-h1',
+ fmt:'H1 · 1 to 2 sentences · only when there is a clear follow-on task',
+ g:`<p>Add this section only when the task leads directly to a follow-on action. Finance workflows often have a downstream ERP step that makes this section genuinely useful. Skip it if the task is self-contained.</p>`,
+ ex:'"With the offer active, set up usage metering to ensure billing is accurate. See Report usage for AWS Marketplace."', src:'doc.suger.io/aws-marketplace'},
+
+{n:'09', name:'Frequently Asked Questions (FAQs)', req:0, hl:'st-acc',
+ fmt:'H1 · accordion items · Q: on summary line · A: in body · 5 items maximum',
+ g:`<p>Only include questions users have actually asked. Format every item the same way:</p>
+<ul>
+<li><strong>Q:</strong> on the accordion summary line</li>
+<li><strong>A:</strong> in the body, leading with the direct answer before any explanation</li>
+<li>1 to 2 sentences per answer</li>
+<li>If you have more than 5 questions, create a separate Frequently Asked Questions (FAQs) article</li>
+</ul>`,
+ ex:'"Q: Can I edit an offer after sending it?\\nA: No. Expire the offer and create a new one with updated terms."', src:'common AWS Marketplace support questions'},
+
+{n:'10', name:'Troubleshooting', req:0, hl:'st-acc',
+ fmt:'H1 · accordion items · exact error on summary line · 5 items maximum',
+ g:`<p>Use the exact error message as the accordion header. Structure each accordion body the same way:</p>
+<ul>
+<li>One sentence explaining the cause of this error</li>
+<li>For multiple possible causes: list fixes from simplest to most complex</li>
+<li>Before each fix: one sentence on why it is likely the cause</li>
+<li>If you have more than 5 errors, create a separate Troubleshooting guide</li>
+</ul>`,
+ ex:'"Error: Product not eligible" &rarr; Fix 1: check listing status (why: product must be Live) &rarr; Fix 2: confirm listing link (why: listing ID may be missing).', src:'doc.suger.io/aws-marketplace'},
+]},
+
+
+/* ─────────────────────────────────────────────
+   3. HUB ARTICLE
+───────────────────────────────────────────── */
+{name:'Hub article', icon:'ti-layout-grid', accent:'#166B38', badge:'Core', group:'main',
+use:'Introducing a Suger feature, page, or section with links to all related task articles',
+ex:'Products page, Home page, Co-sell section, Offers dashboard',
+
+preview:`
+<div class="art-title">Products in Suger</div>
+<div class="tldr"><strong>TLDR:</strong> The Products section in Suger is where you manage all your cloud marketplace listings. Create, configure, and track products across AWS, Azure, and GCP from one place.</div>
+
+<h1>Overview</h1>
+<p>A product in Suger is a listing on a cloud marketplace. Before you can send private offers, run co-sell motions, or track marketplace revenue, you need at least one product listed and live. This article introduces the Products section, explains what you will find there, and links to every task you can perform from this page.</p>
+
+<h1>What&#39;s on this page</h1>
+<p>When you open <strong>Products</strong> in the Suger console, you see a table of all your marketplace listings. Here is what each column shows:</p>
+<table><thead><tr><th>Column</th><th>What it shows</th></tr></thead>
+<tbody>
+<tr><td><strong>Product name</strong></td><td>The display name of your listing as it appears on the marketplace.</td></tr>
+<tr><td><strong>Marketplace</strong></td><td>The cloud marketplace this listing is on: AWS, Azure, GCP, or Snowflake.</td></tr>
+<tr><td><strong>Status</strong></td><td>The current listing state: Draft, Pending review, or Live.</td></tr>
+<tr><td><strong>Last updated</strong></td><td>The date and time of the most recent change to this product.</td></tr>
+</tbody></table>
+<h2>Product status explained</h2>
+<p>A product must be <strong>Live</strong> before you can create private offers or submit it for co-sell. Products in <strong>Draft</strong> or <strong>Pending review</strong> are not yet visible to buyers.</p>
+<h2>Filters and search</h2>
+<p>Use the search bar to find a product by name. Use the <strong>Marketplace</strong> filter to narrow results to a specific cloud provider.</p>
+
+<h1>What you can do here</h1>
+<ul>
+<li><strong>Create a new listing</strong> &mdash; Add a new product to AWS, Azure, GCP, or Snowflake Marketplace.</li>
+<li><strong>Edit a listing</strong> &mdash; Update a product&#39;s name, description, or pricing details.</li>
+<li><strong>Set up pricing models</strong> &mdash; Configure flat-rate, usage-based, or contract pricing for your product.</li>
+<li><strong>Track listing status</strong> &mdash; See which products are live, awaiting review, or still in draft.</li>
+</ul>
+
+<h1>Next steps</h1>
+<p>Choose a marketplace to create your first product listing:</p>
+<div class="nlinks">
+<span class="nl">&rarr; Create a product listing in AWS Marketplace</span>
+<span class="nl">&rarr; Create a product listing in Azure Marketplace</span>
+<span class="nl">&rarr; Create a product listing in GCP Marketplace</span>
+<span class="nl">&rarr; Set up usage-based pricing</span>
+</div>
+
+<h1>Frequently Asked Questions (FAQs)</h1>
+<details><summary>Q: Can I list the same product on multiple marketplaces?</summary>
+<div class="ab">A: Yes. Each marketplace listing is managed separately in Suger, but you can reuse the same product details across AWS, Azure, and GCP.</div></details>
+<details><summary>Q: How long does AWS take to review a new listing?</summary>
+<div class="ab">A: AWS and GCP listings typically take 3 to 5 business days. Azure listings can take up to 2 weeks depending on plan complexity.</div></details>
+`,
+
+s:[
+{n:'01', name:'Title', req:1, hl:'st-title',
+ fmt:'No heading tag · noun phrase · "[Feature] in Suger" or "[Page name]"',
+ g:`<p>Use a noun phrase naming the feature or page: "Products in Suger," "The Offers dashboard," "Co-sell in Suger." No action verb. Hub titles describe what a section is, not what to do in it.</p>
+<p><strong>Hub vs Task-based:</strong> Use Hub when you are introducing a feature or page and linking to task articles from it. Use Task-based when the reader has one specific goal to accomplish. Hub is the entry point. Task-based articles are the destinations.</p>`,
+ ex:'"Products in Suger"', src:'doc.suger.io product sections'},
+
+{n:'02', name:'TLDR', req:1, hl:'st-tldr',
+ fmt:'No heading tag · starts with "TLDR:" · 1 to 2 sentences',
+ g:`<p>Describe what this Suger section or feature is for and what the user can do from it. Begin with <strong>TLDR:</strong> on the same line.</p>`,
+ ex:'"TLDR: The Products section in Suger is where you manage all your cloud marketplace listings. Create, configure, and track products across AWS, Azure, and GCP from one place."', src:'doc.suger.io product sections'},
+
+{n:'03', name:'Overview', req:1, hl:'st-h1',
+ fmt:'H1 · 2 to 4 sentences · explains feature and sets up article',
+ g:`<p>Explain what this feature or section is, who uses it, and what they need before they can use it. Tell the reader that this article introduces the section and links to all related task articles. This helps them confirm they are in the right place before reading further.</p>`,
+ ex:'"A product in Suger is a listing on a cloud marketplace. Before you can send private offers or track revenue, you need at least one product listed. This article introduces the Products section and links to every task you can perform from this page."', src:'doc.suger.io product sections'},
+
+{n:'04', name:"What's on this page", req:1, hl:'st-h1',
+ fmt:'H1 · table for columns and fields · H2 for named sub-areas',
+ g:`<p>Describe what the user sees when they open this section. Use a table to explain columns, fields, or status values. Use H2 for named sub-areas within the page, such as filters, status indicators, or sidebar panels.</p>`,
+ ex:'Table: Column | What it shows. Rows: Product name, Marketplace, Status, Last updated. H2: "Product status explained" and "Filters and search"', src:'doc.suger.io product sections'},
+
+{n:'05', name:'What you can do here', req:1, hl:'st-h1',
+ fmt:'H1 · bulleted list · bold action + dash + 1-sentence description · parallel structure',
+ g:`<p>List every available action from this page. Use this format for each item:</p>
+<ul>
+<li><strong>Bold the action name</strong> &mdash; then one sentence starting with a verb describing what it does</li>
+<li>All bold phrases must start with a verb</li>
+<li>All descriptions must start with a verb</li>
+<li>This list maps directly to the task articles you link to in Next steps</li>
+</ul>`,
+ ex:'"<strong>Create a new listing</strong> &mdash; Add a new product to AWS, Azure, GCP, or Snowflake." All items follow: bold verb phrase &mdash; description starting with a verb.', src:'doc.suger.io product sections'},
+
+{n:'06', name:'Next steps', req:1, hl:'st-h1',
+ fmt:'H1 · descriptive link list · required in all hub articles',
+ g:`<p>Required in every hub article. Link to every relevant task article. Use the exact article title as the link text. Group links by topic or marketplace if the list is long.</p>
+<p>This section is why hub articles exist. It is the directory that sends users to the right task article.</p>`,
+ ex:'"&rarr; Create a product listing in AWS Marketplace\\n&rarr; Create a product listing in Azure Marketplace\\n&rarr; Set up usage-based pricing"', src:'doc.suger.io product sections'},
+
+{n:'07', name:'Frequently Asked Questions (FAQs)', req:0, hl:'st-acc',
+ fmt:'H1 · accordion items · Q: / A: format · 5 items maximum',
+ g:`<p>Cover questions about how this feature works. Max 5 items. Create a separate Frequently Asked Questions (FAQs) article if you have more.</p>`,
+ ex:'"Q: Can I list the same product on multiple marketplaces?\\nA: Yes. Each listing is managed separately but you can reuse the same product details."', src:'common product-related questions'},
+]},
+
+
+/* ─────────────────────────────────────────────
+   4. REFERENCE / DATA
+───────────────────────────────────────────── */
+{name:'Reference / Data', icon:'ti-table', accent:'#5A1DB5', badge:'Core', group:'main',
+use:'Documenting fields, statuses, metrics, or data objects, not a how-to guide',
+ex:'CRM enrichment fields, offer status values, available chart types',
+
+preview:`
+<div class="art-title">HubSpot CRM enrichment fields</div>
+<div class="tldr"><strong>TLDR:</strong> Reference for all intelligence signals available through Suger&#39;s CRM Enrichment feature. Includes AWS, Azure, and GCP engagement scores and marketplace activity data that sync to your HubSpot records.</div>
+
+<h1>Overview</h1>
+<p>CRM Enrichment automatically populates your HubSpot records with cloud partner intelligence from AWS Partner Network, Azure Partner Center, and GCP Partner Advantage. Suger maps these signals to custom HubSpot properties you define and refreshes them every 12 hours. For setup instructions, see <em>Configure HubSpot CRM Enrichment</em>.</p>
+
+<h1>AWS signals</h1>
+<table><thead><tr><th>Label</th><th>API name</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td>AWS Engagement Score</td><td><code>aws_engagement_score</code></td><td>Score from 0 to 100 from AWS Partner Network reflecting this account&#39;s co-sell activity and deal history with AWS partners.</td></tr>
+<tr><td>AWS Marketplace Count</td><td><code>aws_marketplace_count</code></td><td>Number of active AWS Marketplace listings associated with this company&#39;s domain.</td></tr>
+<tr><td>AWS Marketplace Review Count</td><td><code>aws_review_count</code></td><td>Total customer reviews on this company&#39;s AWS Marketplace listings.</td></tr>
+<tr><td>AWS Marketplace Purchase Count</td><td><code>aws_purchase_count</code></td><td>Number of marketplace purchases associated with this account on AWS.</td></tr>
+</tbody></table>
+
+<h1>Azure signals</h1>
+<table><thead><tr><th>Label</th><th>API name</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td>Azure Engagement Score</td><td><code>azure_engagement_score</code></td><td>Composite score from Azure Partner Center combining usage, event participation, and marketplace activity.</td></tr>
+<tr><td>Azure Event Score</td><td><code>azure_event_score</code></td><td>Score reflecting this account&#39;s participation in Azure partner events and training programs.</td></tr>
+<tr><td>Azure Marketplace Count</td><td><code>azure_marketplace_count</code></td><td>Number of active Azure Marketplace listings for this company&#39;s domain.</td></tr>
+</tbody></table>
+
+<h1>Common use cases</h1>
+<ul>
+<li>Filter by <strong>AWS Engagement Score &gt; 50</strong> to surface accounts with active co-sell history in your pipeline.</li>
+<li>Filter by <strong>AWS Marketplace Purchase Count &gt; 0</strong> to target companies already buying on AWS Marketplace.</li>
+<li>Sort by <strong>Azure Engagement Score</strong> to prioritize outreach for your Azure co-sell motion.</li>
+</ul>
+
+<h1>Frequently Asked Questions (FAQs)</h1>
+<details><summary>Q: How often are enrichment fields updated?</summary>
+<div class="ab">A: Suger runs enrichment syncs twice daily at midnight and noon UTC. Data from the previous sync is replaced each time, not appended.</div></details>
+<details><summary>Q: What does an empty field mean?</summary>
+<div class="ab">A: The company is either not registered with that cloud partner program, or Suger could not match the record to a known company domain. Confirm the company&#39;s domain is populated in HubSpot.</div></details>
+`,
+
+s:[
+{n:'01', name:'Title', req:1, hl:'st-title',
+ fmt:'No heading tag · noun phrase · "[Object] fields" or "[Feature] reference"',
+ g:`<p>Use a precise noun phrase. No action verbs. The title should identify exactly which data object, field set, or reference the reader is looking at.</p>
+<p><strong>Reference vs Task-based:</strong> Use Reference when documenting what something is and what values it holds, not how to do something with it. "HubSpot CRM enrichment fields" is a Reference. "Configure HubSpot CRM Enrichment" is Task-based.</p>`,
+ ex:'"HubSpot CRM enrichment fields"', src:'doc.suger.io/integrations/hubspot'},
+
+{n:'02', name:'TLDR', req:1, hl:'st-tldr',
+ fmt:'No heading tag · starts with "TLDR:" · 1 to 2 sentences',
+ g:`<p>Name the data object, which system it lives in, and who works with it. Begin with <strong>TLDR:</strong> on the same line.</p>`,
+ ex:'"TLDR: Reference for all intelligence signals available through CRM Enrichment. Includes AWS, Azure, and GCP engagement scores and marketplace data that sync to your HubSpot records."', src:'doc.suger.io/integrations/hubspot'},
+
+{n:'03', name:'Overview', req:1, hl:'st-h1',
+ fmt:'H1 · short paragraph · source, purpose, and link to setup',
+ g:`<p>Explain what this data represents, where it comes from, and what business goal it serves. Name the user role or team that works with it most.</p>
+<ul>
+<li>If setup is needed to access or generate this data, link to the setup article here</li>
+<li>Do not duplicate setup steps in this article</li>
+</ul>`,
+ ex:'"CRM Enrichment automatically populates HubSpot records with cloud partner intelligence from AWS, Azure, and GCP. Suger refreshes these fields every 12 hours. For setup, see Configure HubSpot CRM Enrichment."', src:'doc.suger.io/integrations/hubspot'},
+
+{n:'04', name:'Data tables', req:1, hl:'st-h1',
+ fmt:'H1 per logical data group · table with three columns: Label · API name · Description',
+ g:`<p>Use one H1 per logical grouping, such as by cloud provider or object type. The table always has exactly three columns:</p>
+<ul>
+<li><strong>Label</strong>: what the user sees in the UI</li>
+<li><strong>API name</strong>: the technical identifier, formatted as inline code</li>
+<li><strong>Description</strong>: one sentence on what the field means and when it is populated</li>
+</ul>
+<p>All descriptions must follow the same structure. Start each description with a noun: "Score from 0 to 100..." "Number of active..." "Total customer..."</p>`,
+ ex:'Label: "AWS Engagement Score" | API name: <code>aws_engagement_score</code> | Description: "Score from 0 to 100 reflecting co-sell activity." All descriptions follow the same noun-first pattern.', src:'doc.suger.io/integrations/hubspot'},
+
+{n:'05', name:'Common use cases', req:1, hl:'st-h1',
+ fmt:'H1 · bulleted list · includes exact field names and values · parallel structure',
+ g:`<p>Show how this data is used in real workflows. Include exact field names and filter values so users can apply them immediately.</p>
+<ul>
+<li>All items must start with the same verb: "Filter by," "Sort by," or "Use X to"</li>
+<li>Avoid vague statements such as "can be used to identify prospects"</li>
+</ul>`,
+ ex:'"Filter by AWS Engagement Score &gt; 50 to surface accounts with active co-sell history." All items start with "Filter by" or "Sort by."', src:'doc.suger.io/integrations/hubspot'},
+
+{n:'06', name:'Frequently Asked Questions (FAQs)', req:0, hl:'st-acc',
+ fmt:'H1 · accordion items · Q: / A: format · 5 items maximum',
+ g:`<p>Cover questions about data freshness, empty fields, and field coverage. Max 5 items. Create a separate Frequently Asked Questions (FAQs) article if you have more.</p>`,
+ ex:'"Q: How often are enrichment fields updated?\\nA: Twice daily at midnight and noon UTC."', src:'doc.suger.io/integrations/hubspot'},
+]},
+
+
+/* ─────────────────────────────────────────────
+   5. FREQUENTLY ASKED QUESTIONS (FAQs)
+───────────────────────────────────────────── */
+{name:'Frequently Asked Questions (FAQs)', icon:'ti-help', accent:'#5A5AA8', badge:'Standalone', group:'solo',
+use:'A standalone FAQ article for topics with more than 5 questions or multiple subtopics',
+ex:'Private offers FAQ, billing FAQ, co-sell FAQ',
+
+preview:`
+<div class="art-title">AWS Marketplace private offers: Frequently Asked Questions (FAQs)</div>
+<div class="tldr"><strong>TLDR:</strong> Answers to the most common questions about creating, editing, pricing, and canceling private offers in AWS Marketplace through Suger.</div>
+
+<h1>Overview</h1>
+<p>This article answers common questions about the private offer workflow in AWS Marketplace. Questions are grouped by topic. If you need step-by-step instructions, see <em>Create a private offer in AWS Marketplace</em>.</p>
+<div class="cal c-n">&#x1F4CC; <strong>Note:</strong> This article covers private offers managed through Suger. For questions about the AWS Marketplace console itself, refer to the AWS Marketplace seller documentation.</div>
+
+<h1>Creating offers</h1>
+<details><summary>Q: Can I create an offer without a product listed in AWS Marketplace?</summary>
+<div class="ab">A: No. You need a Live product in AWS Marketplace before creating a private offer. If your product is in Draft or Pending review, wait for AWS to approve the listing first.</div></details>
+<details><summary>Q: How many buyers can I include in a single private offer?</summary>
+<div class="ab">A: Each private offer is for a single AWS buyer account. Create separate offers for each buyer.</div></details>
+<details><summary>Q: Can I create a private offer for a product in Pending review status?</summary>
+<div class="ab">A: No. The product must show Live status before Suger can create private offers for it.</div></details>
+
+<h1>Editing and canceling</h1>
+<details><summary>Q: Can I edit an offer after sending it to the buyer?</summary>
+<div class="ab">A: No. Once sent, offer terms are locked. Expire the offer in Suger and create a new one with the updated terms.</div></details>
+<details><summary>Q: Can I extend the expiration date after sending the offer?</summary>
+<div class="ab">A: No. AWS doesn't support extending expiration dates on sent offers. Expire the offer and re-create it with a new date.</div></details>
+<details><summary>Q: How do I cancel an offer the buyer has not accepted yet?</summary>
+<div class="ab">A: In Suger, go to <strong>Offers</strong>, open the offer, and click <strong>Expire Offer</strong>. The buyer receives a notification that the offer is no longer available.</div></details>
+
+<h1>Pricing and billing</h1>
+<details><summary>Q: Can I use multiple pricing dimensions in one offer?</summary>
+<div class="ab">A: Yes. AWS supports up to 24 pricing dimensions in a single private offer.</div></details>
+<details><summary>Q: Can I offer a price lower than my public listing price?</summary>
+<div class="ab">A: Yes. Private offers support custom pricing that can differ from your public listing price, including discounts.</div></details>
+<details><summary>Q: What happens if the buyer doesn't accept before the offer expires?</summary>
+<div class="ab">A: The offer expires automatically and the buyer can no longer accept it. Create and send a new offer to continue the conversation.</div></details>
+`,
+
+s:[
+{n:'01', name:'Title', req:1, hl:'st-title',
+ fmt:'No heading tag · "[Topic]: Frequently Asked Questions (FAQs)"',
+ g:`<p>Use the format: "[Topic]: Frequently Asked Questions (FAQs)" or "[Topic] frequently asked questions." Spell it out completely in the title. Name the specific feature or workflow this covers.</p>
+<p><strong>When to create a standalone FAQ article:</strong> when you have more than 5 questions for a topic, or when questions span multiple sub-topics that would bloat the main article. If you have fewer than 5 items that all relate directly to one task, keep them in that task article instead.</p>`,
+ ex:'"AWS Marketplace private offers: Frequently Asked Questions (FAQs)"', src:'standard standalone FAQ pattern'},
+
+{n:'02', name:'TLDR', req:1, hl:'st-tldr',
+ fmt:'No heading tag · starts with "TLDR:" · describes scope of this FAQ article',
+ g:`<p>State what topics this FAQ covers. If there are scope limits (for example, it only covers Suger-managed workflows and not the marketplace console itself), note that. Begin with <strong>TLDR:</strong> on the same line.</p>`,
+ ex:'"TLDR: Answers to the most common questions about creating, editing, pricing, and canceling private offers in AWS Marketplace through Suger."', src:'standard standalone FAQ pattern'},
+
+{n:'03', name:'Overview', req:1, hl:'st-h1',
+ fmt:'H1 · 2 to 3 sentences · scope + link to task article + any scope limits',
+ g:`<p>Tell the reader three things:</p>
+<ol>
+<li>What this article covers</li>
+<li>How the questions are organized (grouped by topic)</li>
+<li>Where to go for step-by-step instructions instead of answers to questions</li>
+</ol>
+<p>If this FAQ only covers Suger-managed questions (not the external platform), add a Note callout clarifying that scope. This prevents users from hunting through the article for something it doesn't cover.</p>`,
+ ex:'"This article answers common questions about the private offer workflow in AWS Marketplace. Questions are grouped by topic. For step-by-step instructions, see Create a private offer in AWS Marketplace."', src:'standard standalone FAQ pattern'},
+
+{n:'04', name:'[Topic group]', req:1, hl:'st-h1',
+ fmt:'H1 per topic group · accordion items per question · Q: on summary line · A: in body',
+ g:`<p>Group questions by sub-topic under H1 headings. Examples: "Creating offers," "Editing and canceling," "Pricing and billing." Each question is one accordion item.</p>
+<ul>
+<li><strong>Q:</strong> on the accordion summary line, phrased as the user would ask it</li>
+<li><strong>A:</strong> in the accordion body, leading with the direct answer (yes, no, or the specific action) before any explanation</li>
+<li>Keep answers to 1 to 2 sentences. If an answer needs more, link to the relevant task article instead</li>
+<li>All Q/A items within each group must maintain parallel structure</li>
+</ul>`,
+ ex:'"Q: Can I edit an offer after sending it to the buyer?\\nA: No. Expire the offer and create a new one with updated terms." Direct answer first, brief explanation after.', src:'common AWS Marketplace support questions'},
+
+{n:'05', name:'[Additional topic groups]', req:0, hl:'st-h1',
+ fmt:'H1 per additional topic group · same Q: / A: accordion format',
+ g:`<p>Add as many topic groups as the content requires. Merge a group into the nearest related group if it has only one question.</p>`,
+ ex:'"Editing and canceling" (H1) · "Pricing and billing" (H1) · "Notifications" (H1)', src:'standard standalone FAQ pattern'},
+]},
+
+
+/* ─────────────────────────────────────────────
+   6. TROUBLESHOOTING GUIDE
+───────────────────────────────────────────── */
+{name:'Troubleshooting guide', icon:'ti-tool', accent:'#A03030', badge:'Standalone', group:'solo',
+use:'A dedicated troubleshooting article for more than 5 errors or complex multi-step fixes',
+ex:'AWS Marketplace integration troubleshooting, co-sell sync error reference',
+
+preview:`
+<div class="art-title">AWS Marketplace integration: Troubleshooting guide</div>
+<div class="tldr"><strong>TLDR:</strong> Fixes for the most common errors when connecting, verifying, and syncing your AWS Marketplace integration in Suger. Fixes are ordered from simplest to most involved.</div>
+
+<h1>Overview</h1>
+<p>This guide covers errors specific to the AWS Marketplace integration in Suger. Before looking up a specific error, confirm these first:</p>
+<ul>
+<li>Your IAM Role name is exactly <strong>Suger-Role</strong>. The name is case-sensitive.</li>
+<li>The integration status in Suger shows <strong>Verified</strong>, not just Connected.</li>
+<li>Your AWS account has Marketplace seller access enabled.</li>
+</ul>
+<p>For setup instructions, see <em>Connect AWS Marketplace to Suger</em>.</p>
+
+<h1>Authentication errors</h1>
+<p>These errors occur when Suger can't access or assume your AWS IAM Role. Most are caused by a naming mismatch, a missing trust policy, or the role being in the wrong AWS account.</p>
+
+<h2>Error: "IAM Role 'Suger-Role' not found in AWS"</h2>
+<p>Suger can't find the IAM Role it needs to access your AWS account.</p>
+
+<h3>Fix 1: Confirm the role name is exactly right</h3>
+<p><em>Why start here: The role name is case-sensitive. "suger-role" or "Suger-Role " with a trailing space will fail. Check the name before anything else.</em></p>
+<ol>
+<li>In your AWS console, go to <strong>IAM</strong> &rarr; <strong>Roles</strong>.</li>
+<li>Search for <strong>Suger-Role</strong>: capital S, capital R, no spaces.</li>
+<li>If the name doesn't match exactly, rename the role or re-create it with the correct name.</li>
+</ol>
+
+<h3>Fix 2: Confirm the role is in the correct AWS account</h3>
+<p><em>Why try this next: If you manage multiple AWS accounts, the role may be in the wrong one. Suger looks for it in the account ID you provided during setup.</em></p>
+<ol>
+<li>In Suger, go to <strong>Settings</strong> &rarr; <strong>Integrations</strong> &rarr; <strong>AWS Marketplace</strong> &rarr; <strong>Edit</strong>.</li>
+<li>Confirm the AWS Account ID matches the account where you created the IAM Role.</li>
+<li>If they don't match, create the role in the correct account or update the account ID in Suger.</li>
+</ol>
+
+<h3>Fix 3: Re-create the IAM Role using the Suger setup guide</h3>
+<p><em>Why this is last: Use this only when the role exists and the account ID is correct, but Suger still can't find it. This usually means the role has conflicting configuration from a previous failed setup.</em></p>
+<ol>
+<li>In Suger, download the latest IAM setup template from <strong>Settings</strong> &rarr; <strong>Integrations</strong> &rarr; <strong>AWS Marketplace</strong> &rarr; <strong>Setup Guide</strong>.</li>
+<li>In AWS IAM, delete the existing Suger-Role.</li>
+<li>Follow the template to re-create the role from scratch.</li>
+<li>Return to Suger and click <strong>Verify</strong>.</li>
+</ol>
+
+<h2>Error: "Permission denied when assuming role"</h2>
+<p>The role exists but Suger can't use it. The trust policy is the most likely cause.</p>
+
+<h3>Fix 1: Update the trust policy</h3>
+<p><em>Why start here: The trust policy controls which AWS accounts can assume the Suger-Role. If Suger's AWS account ID is missing or has a typo, Suger will always be denied.</em></p>
+<ol>
+<li>In Suger, download the latest trust policy template from the Setup Guide.</li>
+<li>In AWS IAM Console, open <strong>Suger-Role</strong> &rarr; <strong>Trust relationships</strong>.</li>
+<li>Replace the existing policy with the downloaded template.</li>
+<li>Return to Suger and click <strong>Verify</strong>.</li>
+</ol>
+
+<h3>Fix 2: Confirm the permissions policy is attached</h3>
+<p><em>Why try this next: If the trust policy is correct but the error persists, the role may be missing the permissions policy Suger needs to read marketplace data.</em></p>
+<ol>
+<li>In AWS IAM Console, open <strong>Suger-Role</strong> &rarr; <strong>Permissions</strong>.</li>
+<li>Confirm the Suger permissions policy is attached. If it's missing, download it from the Setup Guide and attach it.</li>
+<li>Click <strong>Verify</strong> in Suger.</li>
+</ol>
+
+<h1>Sync errors</h1>
+<p>These errors occur when Suger can't read or update data from your AWS Marketplace account after the integration is connected.</p>
+
+<h2>Error: "Product sync failed: listing not found"</h2>
+<p>Suger can't find the AWS Marketplace listing that corresponds to this product.</p>
+
+<h3>Fix 1: Confirm the listing is still active in AWS</h3>
+<p><em>Why start here: The listing may have been deleted directly in AWS Marketplace. Checking takes 30 seconds and resolves most cases.</em></p>
+<ol>
+<li>Log in to the <strong>AWS Marketplace Management Portal</strong>.</li>
+<li>Search for the product by name and confirm it shows an active status.</li>
+<li>If it was deleted, re-create the listing in AWS and re-link it in Suger under <strong>Products</strong> &rarr; <strong>AWS Marketplace</strong>.</li>
+</ol>
+
+<h3>Fix 2: Trigger a manual sync</h3>
+<p><em>Why try this next: If the listing is active but Suger still shows the error, the product data in Suger may be stale from a previous failed sync. A manual sync forces Suger to re-read the listing from AWS.</em></p>
+<ol>
+<li>In Suger, go to <strong>Products</strong> &rarr; <strong>AWS Marketplace</strong>.</li>
+<li>Open the product and click <strong>Sync</strong>.</li>
+<li>Wait 2 to 3 minutes, then refresh the page.</li>
+</ol>
+
+<h1>Still need help?</h1>
+<p>If the error isn't listed here or the fixes don't resolve the issue, contact <strong>Suger Support</strong> with:</p>
+<ul>
+<li>The exact error message, copied from the screen</li>
+<li>The timestamp of when the error occurred</li>
+<li>Your AWS Account ID</li>
+<li>The name or ID of the affected product or offer</li>
+</ul>
+`,
+
+s:[
+{n:'01', name:'Title', req:1, hl:'st-title',
+ fmt:'No heading tag · "[Topic]: Troubleshooting guide" or "[Topic] error reference"',
+ g:`<p>Use "[Topic]: Troubleshooting guide" for broad guides covering multiple error types. Use "[Topic] error reference" for comprehensive error code documentation.</p>
+<p><strong>When to create a standalone Troubleshooting guide:</strong> when you have more than 5 errors, when fixes require multiple steps, when errors span multiple systems, or when the troubleshooting content would be longer than the main article itself.</p>`,
+ ex:'"AWS Marketplace integration: Troubleshooting guide"', src:'standard standalone TS pattern'},
+
+{n:'02', name:'TLDR', req:1, hl:'st-tldr',
+ fmt:'No heading tag · starts with "TLDR:" · states scope and fix ordering',
+ g:`<p>State which feature and which workflow stages the errors relate to. Tell readers that fixes are ordered from simplest to most involved. This sets expectations for how to use the guide.</p>`,
+ ex:'"TLDR: Fixes for the most common errors when connecting, verifying, and syncing your AWS Marketplace integration in Suger. Fixes are ordered from simplest to most involved."', src:'standard standalone TS pattern'},
+
+{n:'03', name:'Overview', req:1, hl:'st-h1',
+ fmt:'H1 · 2 to 4 sentences + quick checklist + link to setup guide',
+ g:`<p>Two things belong in Overview:</p>
+<ol>
+<li>What this guide covers, and a link to the setup article for users who have not completed setup yet</li>
+<li>A quick checklist of 2 to 4 items to confirm before looking up a specific error. These catch the most common issues immediately and are worth checking before opening any accordion</li>
+</ol>`,
+ ex:'"Before looking up a specific error, check: IAM Role name is exactly Suger-Role (case-sensitive) · Integration status shows Verified, not just Connected."', src:'standard standalone TS pattern'},
+
+{n:'04', name:'[Error category]', req:1, hl:'st-h1',
+ fmt:'H1 per error category · accordion per error · exact error message on summary line',
+ g:`<p>Group errors by category under H1 headings: Authentication errors, Sync errors, Offer errors. Each error is one accordion item. The summary line must be the exact error message as it appears on screen.</p>
+<p>Structure each accordion body the same way:</p>
+<ul>
+<li>One sentence explaining what causes this class of error</li>
+<li>For a single cause: one Fix block with a "Why start here:" sentence and numbered steps</li>
+<li>For multiple causes: list fixes from simplest to most complex. Before each Fix, write one sentence beginning with "Why start here:" or "Why try this next:" explaining why it is the likely cause. This helps users pick the right fix without trying all options</li>
+</ul>`,
+ ex:'"Authentication errors" (H1) &rarr; accordion: exact error text &rarr; cause sentence &rarr; Fix 1 (why: most common, short steps) &rarr; Fix 2 (why: next most likely, more steps) &rarr; Fix 3 if needed (why: last resort).', src:'AWS Marketplace integration error patterns'},
+
+{n:'05', name:'[Additional error categories]', req:0, hl:'st-h1',
+ fmt:'H1 per additional category · same accordion format',
+ g:`<p>Add as many error categories as needed. Merge a category into the nearest related one if it has only one error.</p>`,
+ ex:'"Sync errors" (H1) · "Offer errors" (H1) · "Billing errors" (H1)', src:'standard standalone TS pattern'},
+
+{n:'06', name:'Still need help?', req:1, hl:'st-h1',
+ fmt:'H1 · escalation path + specific information to include with a support request',
+ g:`<p>End every Troubleshooting guide with an escalation path. Tell users exactly what information to include when contacting support. Listing specific details reduces back-and-forth in support tickets and helps the team investigate faster.</p>`,
+ ex:'"Contact Suger Support with: exact error message · timestamp · AWS Account ID · affected product or offer ID."', src:'standard standalone TS pattern'},
+]},
+
+];/* end T[] */
+const RULES = [
+  {i:'ti-tag', l:'Title', t:'8 words or fewer. Action verb for task and integration articles. Noun phrase for reference, hub, and FAQ articles. No "How to." No words ending in -ing. No period at the end.'},
+  {i:'ti-file-text', l:'TLDR block', t:'No heading tag. Starts with TLDR: on the same line, not as a heading. 1 to 2 sentences. Names Suger and the tool or feature. Leads with user benefit, not feature description.'},
+  {i:'ti-heading', l:'Headings', t:'H1 for every main section. H2 for subsections within an H1. H3 for sub-subsections within H2, used sparingly. Sentence case always. Never title case.'},
+  {i:'ti-list', l:'Lists', t:'Numbered lists for sequential steps. Restart the list from 1 under each new H1 phase. Bulleted lists for non-sequential items. All items in any list must start with the same type of word (parallel structure). Always introduce a list with a colon.'},
+  {i:'ti-bold', l:'Bold', t:'UI elements only: button names, tab names, menu labels, field names, status values. Match the exact capitalization shown in the product. Never bold Suger, AWS, Azure, GCP, or general text for emphasis.'},
+  {i:'ti-link', l:'Links', t:'Use the exact article title as link text. Never "click here" or "read more." For steps happening outside Suger: use a cross-system callout and link to the external article. Never document external steps directly.'},
+];
+
+
+/* STATE */
+let at=0,as_=0,gv="guide";
+function A(){return document.getElementById("app");}
+
+function rPick(){
+  const card=(t,i)=>`<div class="tcard" onclick="gT(${i})" style="--_accent:${t.accent}">
+    <div class="card-head">
+      <div class="card-icon"><i class="ti ${t.icon}"></i></div>
+      <div class="card-name">${t.name}</div>
     </div>
-  </div>
-
-  <div class="sidebar-footer">Suger KB · 2026</div>
-</aside>
-
-<!-- ══════════ MAIN ══════════ -->
-<div class="main">
-  <div class="topbar">
-    <div class="topbar-left">
-      <h2 id="topbar-title">How-to template</h2>
-      <p id="topbar-sub">Task-based guide for completing a specific action in Suger</p>
-    </div>
-    <button class="toggle-btn" id="toggleBtn" onclick="toggleNotes()">
-      ✏️ Show author notes
-    </button>
-  </div>
-
-  <div class="content">
-
-    <!-- ── Legend ── -->
-    <div class="legend">
-      <div class="legend-title">Legend</div>
-      <div class="legend-grid">
-        <div class="legend-item">
-          <div class="legend-swatch" style="background:#f0fdf4; border:1.5px solid #86efac;"></div>
-          Article structure
+    <div class="card-desc">${t.use}</div>
+    <div class="card-ex">${t.ex}</div>
+  </div>`;
+  const base=T.filter(t=>t.group==="base"),
+        main=T.filter(t=>t.group==="main"),
+        solo=T.filter(t=>t.group==="solo");
+  A().innerHTML=`
+    <div class="intro"><h1>Article templates</h1></div>
+    <div class="sec-lbl">Start here</div>
+    <div class="card-grid-1" style="margin-bottom:22px">${base.map(t=>card(t,T.indexOf(t))).join("")}</div>
+    <div class="sec-lbl">Article types</div>
+    <div class="card-grid" style="margin-bottom:22px">${main.map(t=>card(t,T.indexOf(t))).join("")}</div>
+    <div class="sec-lbl">Standalone documents</div>
+    <div class="card-grid" style="margin-bottom:28px">${solo.map(t=>card(t,T.indexOf(t))).join("")}</div>
+    <div class="cpan" style="margin-bottom:8px">
+      <div class="cpan-hdr" id="dg-hdr" onclick="tP('dg')">
+        <span><i class="ti ti-route" style="margin-right:7px;vertical-align:-2px;font-size:14px"></i>How to pick the right template</span>
+        <i class="ti ti-chevron-down" id="dg-ic" style="font-size:13px;transition:transform .2s"></i>
+      </div>
+      <div class="cpan-body" id="dg-b">
+        <div style="padding:16px 20px;border-bottom:1px solid var(--border)">
+          <p style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px">Start with what the reader is trying to do &mdash; not with the content you have.</p>
+          <div class="decision-grid">
+            <div class="dg-cell"><strong>They want to understand a feature or page</strong><p>Use <strong>Hub article</strong> &mdash; but only if multiple task articles branch off it. If there's only one task linked to it, skip the hub. A hub with one link is just an introduction, not a hub.</p></div>
+            <div class="dg-cell"><strong>They want to connect Suger to another tool</strong><p>Use <strong>Integration setup</strong>. The deliverable is "Tool X is now connected to Suger." If the deliverable is "I've completed action X in Suger," use Task-based.</p></div>
+            <div class="dg-cell"><strong>They want to complete a specific task</strong><p>Use <strong>Task-based</strong>. Covers operational tasks, finance workflows (refunds, reconciliation), and end-to-end flows spanning Suger and an external system.</p></div>
+            <div class="dg-cell"><strong>They want to look up a field, status, or data value</strong><p>Use <strong>Reference / Data</strong>. For structured data &mdash; field definitions, status lists, metrics. If the answer needs prose explanation, it might be FAQ instead.</p></div>
+            <div class="dg-cell"><strong>They have questions but don't need step-by-step</strong><p>Use <strong>FAQ article</strong> for 5+ questions, or questions spanning multiple subtopics. Fewer than 5? Add them to the relevant article instead.</p></div>
+            <div class="dg-cell"><strong>Something isn't working</strong><p>Use <strong>Troubleshooting guide</strong> for 5+ errors or complex multi-step fixes. Fewer than 5? Add a Troubleshooting section to the relevant task article instead.</p></div>
+          </div>
         </div>
-        <div class="legend-item">
-          <div class="legend-swatch" style="background:#fffbeb; border:1.5px solid #fbbf24;"></div>
-          Author guidance (toggle above)
+        <div style="padding:16px 20px;border-bottom:1px solid var(--border);font-size:12px;color:var(--t2);line-height:1.75">
+          <p style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">Edge cases</p>
+          <ul style="padding-left:16px">
+            <li style="margin-bottom:8px"><strong>"Data isn't syncing &mdash; is this a troubleshooting article or integration setup?"</strong><br>Integration setup if the question is "how do I set this up correctly?" Troubleshooting if the integration is already set up and something broke. Troubleshooting lives after the connection is already established.</li>
+            <li style="margin-bottom:8px"><strong>"My task spans Suger and an external system (like a buyer accepting in AWS)."</strong><br>Use Task-based. The "What happens in [external system]" section handles the hand-off. The task starts and ends in Suger even when there's a middle step elsewhere.</li>
+            <li style="margin-bottom:8px"><strong>"Integration setup or Task-based?"</strong><br>Integration setup if the result is "the tool is now connected." Task-based if the result is "I've completed an action." Connecting HubSpot &rarr; Integration setup. Creating a co-sell from HubSpot &rarr; Task-based.</li>
+            <li style="margin-bottom:8px"><strong>"Reference or FAQ?"</strong><br>Reference for structured data (fields, statuses, values). FAQ for questions that need explanatory answers. "What does PENDING_ACCEPTANCE mean?" can go either way &mdash; if it fits in a table, use Reference; if it needs context, use FAQ.</li>
+            <li style="margin-bottom:8px"><strong>"FAQ or Troubleshooting?"</strong><br>Troubleshooting if the question is "why isn't X working" or "how do I fix X." FAQ if nothing's broken. "What happens if the buyer doesn't accept?" &rarr; FAQ. "The buyer accepted but status isn't updating" &rarr; Troubleshooting.</li>
+            <li><strong>"Hub or just a task article?"</strong><br>Hub only when multiple task articles branch off it and users need to understand the feature landscape first. One associated task &rarr; skip the hub. Just listing loosely related links &rarr; that's a category page, not a hub.</li>
+          </ul>
         </div>
-        <div class="legend-item">
-          <div class="legend-swatch" style="background:#f9fafb; border:1.5px dashed #d1d5db;"></div>
-          Content placeholder (fill in)
-        </div>
-        <div class="legend-item">
-          <div class="legend-swatch" style="background:#fee2e2; border:1.5px solid #fca5a5;"></div>
-          Required section
-        </div>
-        <div class="legend-item">
-          <div class="legend-swatch" style="background:#f3f4f6; border:1.5px solid #d1d5db;"></div>
-          Optional section
-        </div>
-        <div class="legend-item">
-          <div class="legend-swatch" style="background:#fef3c7; border:1.5px solid #fcd34d;"></div>
-          Conditional section
+        <div style="padding:16px 20px;font-size:12px;color:var(--t2);line-height:1.75">
+          <p style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">The article flow &mdash; in the order a user encounters them</p>
+          <div class="flow-vis">
+            <div class="flow-node">Hub article<div class="flow-sub">What is this? What can I do?</div></div>
+            <div class="flow-arrow">&#x2193;</div>
+            <div class="flow-row">
+              <div class="flow-node">Task-based<div class="flow-sub">How do I do X?</div></div>
+              <div class="flow-node">Integration setup<div class="flow-sub">How do I connect Y?</div></div>
+              <div class="flow-node">Reference / Data<div class="flow-sub">What does Z mean?</div></div>
+            </div>
+            <div class="flow-arrow">&#x2193; When questions or errors pile up</div>
+            <div class="flow-row">
+              <div class="flow-node flow-solo">FAQ article<div class="flow-sub">5+ common questions</div></div>
+              <div class="flow-node flow-solo">Troubleshooting guide<div class="flow-sub">5+ errors or complex fixes</div></div>
+            </div>
+          </div>
+          <p style="margin-top:10px">For a complex feature, you'll often write all of these. Start with the hub, then the task articles it links to, then reference for any data fields users need, and build FAQ/troubleshooting as real questions and errors emerge from users.</p>
         </div>
       </div>
     </div>
-
-    <!-- ════════════════════════════════ HOW-TO ════════════════════════════════ -->
-    <div class="panel active" id="panel-howto">
-
-      <div class="view-toggle">
-        <button class="vt-btn active" onclick="switchView('howto','template',this)">📋 Template</button>
-        <button class="vt-btn" onclick="switchView('howto','example',this)">📄 Example</button>
+    <div class="cpan">
+      <div class="cpan-hdr" id="rf-hdr" onclick="tP('rf')">
+        <span><i class="ti ti-list-check" style="margin-right:7px;vertical-align:-2px;font-size:14px"></i>Formatting reference</span>
+        <i class="ti ti-chevron-down" id="rf-ic" style="font-size:13px;transition:transform .2s"></i>
       </div>
-
-      <!-- TEMPLATE VIEW -->
-      <div class="view-pane active" id="howto-template">
-
-        <div class="tmpl-header">
-          <div class="type-badge type-howto">● How-to</div>
-          <h2>How-to template</h2>
-          <p>Use for step-by-step tasks: creating an offer, editing a product listing, configuring a setting.</p>
+      <div class="cpan-body" id="rf-b">
+        <div class="rg">
+          ${RULES.map(r=>`<div class="rc"><div class="rh"><i class="ti ${r.i}"></i><b>${r.l}</b></div><p>${r.t}</p></div>`).join("")}
+          <div class="rg-full">
+            <b style="font-size:12px;color:var(--text)">Callout types and how to use them</b>
+            <p style="font-size:11px;color:var(--t2);margin:6px 0 10px;line-height:1.6">
+              <strong>Placement:</strong> Notes go before the content they add context to. Warnings go before the step they protect &mdash; never after it. Tips go after the main content as an optional enhancement.<br>
+              <strong>Frequency:</strong> One callout per section, maximum. Never two in a row without prose between them. If removing the callout would make the content worse, keep it. If the main text already says it, cut it.
+            </p>
+            <div class="co-pills">
+              <div class="cpill cp-n"><strong>&#x1F4CC; Note</strong> &mdash; Expected behavior, timing, or context the user needs before continuing</div>
+              <div class="cpill cp-t"><strong>&#x1F4A1; Tip</strong> &mdash; Best practice or shortcut. Place after the main content.</div>
+              <div class="cpill cp-w"><strong>&#x26A0;&#xFE0F; Warning</strong> &mdash; Irreversible action, blocker, or step that breaks the workflow if missed. Place before the step it applies to.</div>
+              <div class="cpill cp-x"><strong>&#x1F4CB; Cross-system</strong> &mdash; Steps happening outside Suger. Always link out. Never document external steps directly.</div>
+            </div>
+          </div>
         </div>
+      </div>
+    </div>`;
+}
 
-        <div class="a-card">
+function rGuide(){
+  const t=T[at];if(gv==="preview"){rPrev();return;}
+  const sec=t.s[as_],tot=t.s.length,pct=Math.round(((as_+1)/tot)*100);
+  const hlN={"st-title":"Title","st-tldr":"TLDR","st-h1":"H1","st-h2":"H2","st-h3":"H3","st-acc":"Accordion"};
+  const hlT={"st-title":"t-tit","st-tldr":"t-tldr","st-h1":"t-h1","st-h2":"t-h2","st-h3":"t-h3","st-acc":"t-acc"};
+  const hlKey=sec.hl||"st-h1";
+  const sb=t.s.map((s,i)=>{
+    const done=i<as_,cur=i===as_;
+    const ds=done?"background:var(--s3);color:var(--t3)":cur?`background:${t.accent};color:#fff`:"border:1.5px solid var(--border2);color:var(--t3);background:transparent";
+    return `<div class="si ${cur?"on":""}" onclick="gS(${i})"><div class="sdot" style="${ds}">${done?"&#x2713;":i+1}</div><span class="slb ${cur?"on":"off"}">${s.name}</span></div>`;
+  }).join("");
+  const exBl=sec.ex?`<div class="blk blk-e"><div class="blbl"><i class="ti ti-file-text"></i>Example from Suger docs</div><div class="bcon">${sec.ex}</div>${sec.src?`<div class="bsrc"><i class="ti ti-link" style="font-size:11px"></i>${sec.src}</div>`:""}</div>`:"";
+  A().innerHTML=`<div class="guide">
+    <div class="guide-top">
+      <button class="back-btn" onclick="rPick()"><i class="ti ti-arrow-left" style="font-size:13px"></i> Templates</button>
+      <div class="guide-meta"><i class="ti ${t.icon}" style="font-size:15px;color:${t.accent}"></i><span class="guide-name" style="color:${t.accent}">${t.name}</span></div>
+      <div class="view-tabs">
+        <button class="vtab ${gv==="guide"?"on":""}" onclick="sV('guide')">Guide</button>
+        <button class="vtab ${gv==="preview"?"on":""}" onclick="sV('preview')">Example</button>
+      </div>
+    </div>
+    <div class="pbar"><div class="pfill" style="width:${pct}%;background:${t.accent}"></div></div>
+    <div class="guide-body">
+      <div class="g-sb"><span class="g-sb-lbl">Sections</span>${sb}</div>
+      <div class="g-con">
+        <div class="sec-meta"><span class="snum">${sec.n}</span><div class="tags"><span class="tag ${sec.req?"t-req":"t-opt"}">${sec.req?"Required":"Optional"}</span><span class="tag ${hlT[hlKey]}">${hlN[hlKey]}</span><span class="tag t-fmt">${(sec.fmt||"").split(" \xb7 ")[0]}</span></div></div>
+        <div class="sec-title">${sec.name}</div>
+        ${sfn(hlKey)}
+        <div class="blk blk-g"><div class="blbl"><i class="ti ti-pencil"></i>How to write it</div><div class="bcon">${sec.g}</div></div>
+        ${exBl}
+        <div class="navrow">
+          <button class="nav-btn" onclick="gPv()" ${as_>0?"":"disabled"}><i class="ti ti-arrow-left" style="font-size:13px"></i> Prev</button>
+          <button class="cpy-btn" onclick="doCopy()" title="Copies a blank article skeleton to your clipboard. Paste it into your CMS or doc editor to start writing."><i class="ti ti-copy"></i><span id="cl">Copy starter</span></button>
+          <button class="nav-btn" onclick="gNx()" ${as_<tot-1?"":"disabled"}>Next <i class="ti ti-arrow-right" style="font-size:13px"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
 
-          <!-- Title -->
-          <div class="a-section">
-            <div class="a-section-head accent-howto">
-              <span class="a-section-label">Title</span>
-              <span class="badge badge-req">Required</span>
-            </div>
-            <div class="a-body">
-              <div class="author-note">
-                <div class="an-head">✏️ Author guidance</div>
-                <ul>
-                  <li>Action verb + object. Max 8 words. Sentence case.</li>
-                  <li>No "How to", no gerunds ("-ing"), no terminal punctuation.</li>
-                  <li><code>✅ Create an AWS Marketplace private offer</code></li>
-                  <li><code>❌ How to create an AWS Marketplace private offer</code></li>
-                  <li><code>❌ Creating an AWS Marketplace private offer</code></li>
-                </ul>
-              </div>
-              <div class="title-rules">
-                <div class="tr-head">Title format</div>
-                <div class="tr-ex good">[Action verb] + [object] — e.g., "Create an AWS Marketplace private offer"</div>
-                <div class="tr-ex bad">How to [action] / [Gerund]-ing / Title Case Throughout</div>
-                <ul class="tr-rules">
-                  <li>Max 8 words · Sentence case · No period at the end</li>
-                </ul>
-              </div>
-              <div class="art-title">[Action verb + object]</div>
-            </div>
-          </div>
+function rPrev(){
+  const t=T[at];
+  A().innerHTML=`<div class="guide">
+    <div class="guide-top">
+      <button class="back-btn" onclick="rPick()"><i class="ti ti-arrow-left" style="font-size:13px"></i> Templates</button>
+      <div class="guide-meta"><i class="ti ${t.icon}" style="font-size:15px;color:${t.accent}"></i><span class="guide-name" style="color:${t.accent}">${t.name}</span></div>
+      <div class="view-tabs"><button class="vtab" onclick="sV('guide')">Guide</button><button class="vtab on">Example</button></div>
+    </div>
+    <div class="pv-banner"><i class="ti ti-eye" style="font-size:13px"></i>A complete example showing heading levels, TLDR formatting, callouts, step numbering, and FAQ/Troubleshooting structure.</div>
+    <div class="pv-scroll"><div class="art">${t.preview}</div></div>
+  </div>`;
+}
 
-          <!-- Quick Summary -->
-          <div class="a-section">
-            <div class="a-section-head accent-howto">
-              <span class="a-section-label">Quick summary</span>
-              <span class="badge badge-req">Required</span>
-            </div>
-            <div class="a-body">
-              <div class="author-note">
-                <div class="an-head">✏️ Author guidance</div>
-                <ul>
-                  <li>1–2 sentences. Don't repeat the title — add context.</li>
-                  <li>Format: "By reading this, a Suger user will be able to [action] to [benefit]."</li>
-                  <li>Always name Suger + the cloud/tool (AWS, Azure, HubSpot, etc.).</li>
-                  <li>No "In this article…" or "Welcome to…"</li>
-                </ul>
-              </div>
-              <div class="art-summary">[1–2 sentences. What the user will be able to do and the benefit. Name Suger and the cloud/tool. Don't repeat the title.]</div>
-            </div>
-          </div>
+function gT(i){at=i;as_=0;gv="guide";rGuide();}
+function gS(i){as_=i;rGuide();}
+function gNx(){if(as_<T[at].s.length-1){as_++;rGuide();}}
+function gPv(){if(as_>0){as_--;rGuide();}}
+function sV(v){gv=v;v==="preview"?rPrev():rGuide();}
+function tP(id){
+  const b=document.getElementById(id+"-b"),h=document.getElementById(id+"-hdr"),ic=document.getElementById(id+"-ic");
+  if(!b)return;
+  const open=b.style.display==="none"||!b.style.display;
+  b.style.display=open?"block":"none";
+  if(h)h.classList.toggle("open",open);
+  if(ic)ic.style.transform=open?"rotate(180deg)":"";
+}
+function doCopy(){
+  const t=T[at];
+  const hlL={"st-title":"Title (no heading tag)","st-tldr":"TLDR block (bold TLDR: label, regular text follows)","st-h1":"H1","st-h2":"H2","st-h3":"H3","st-acc":"Accordion item under H1"};
+  const secs=t.s.map(s=>{
+    const lv=hlL[s.hl||"st-h1"];
+    const req=s.req?"Required":"Optional";
+    if(s.hl==="st-title")return`# [Article title here]\n*${lv}*`;
+    if(s.hl==="st-tldr")return`**TLDR:** [Summary sentence here.]\n*${req} \xb7 ${lv}*`;
+    if(s.hl==="st-acc")return`## ${s.name}\n*${req} \xb7 ${lv}*\n\n**Q:** [Question?]\n**A:** [Answer.]`;
+    return`## ${s.name}\n*${req} \xb7 ${lv}*\n\n[Your content here]`;
+  }).join("\n\n---\n\n");
+  const md=`# ${t.name} \u2014 blank starter\n*Paste this into your CMS or doc editor to begin writing. Delete the italicized notes before publishing.*\n\n${secs}`;
+  navigator.clipboard.writeText(md).then(()=>{
+    const el=document.getElementById("cl");
+    if(el){el.textContent="Copied!";setTimeout(()=>{const e=document.getElementById("cl");if(e)e.textContent="Copy starter";},2200);}
+  }).catch(()=>{const el=document.getElementById("cl");if(el){el.textContent="Try again";setTimeout(()=>{const e=document.getElementById("cl");if(e)e.textContent="Copy starter";},2000);}});
+}
+rPick();
 
-          <!-- Intro -->
-          <div class="a-section">
-            <div class="a-section-head accent-howto">
-              <span class="a-section-label">Intro</span>
-              <span class="badge badge-req">Required</span>
-            </div>
-            <div class="a-body">
-              <div class="author-note">
-                <div class="an-head">✏️ Author guidance</div>
-                <ul>
-                  <li>2–4 sentences max. Focus on <strong>why</strong>, not how.</li>
-                  <li>What problem does this solve? What does the user avoid or gain?</li>
-                  <li>Set timing or platform expectations here if relevant.</li>
-                  <li>No callouts here. No step-by-step yet. No "note bloat."</li>
-                </ul>
-              </div>
-              <p class="art-intro">[2–4 sentences. Why this matters — what problem it solves, what the user avoids, or what they gain. Set realistic expectations if timing or platform limits apply. Don't describe the steps yet.]</p>
-            </div>
-          </div>
-
-          <!-- Prerequisites -->
-          <div class="a-section">
-            <div class="a-section-head accent-howto">
-              <span class="a-section-label">Prerequisites</span>
-              <span class="badge badge-cond">If applicable</span>
-            </div>
-            <div class="a-body">
-              <div class="author-note">
-                <div class="an-head">✏️ Author guidance</div>
-                <ul>
-                  <li>Use bullets (non-sequential). State who owns each item.</li>
-                  <li>Use tabs if prerequisites differ by role (AWS vs. Suger vs. buyer).</li>
-                  <li>Move to the ✅ Prerequisites callout in Pylon.</li>
-                </ul>
-              </div>
-              <div class="callout c-pre">
-                <div class="callout-icon">✅</div>
-                <div class="callout-body-wrap">
-                  <div class="callout-title">Things to remember / Prerequisites</div>
-                  <div class="callout-text">
-                    <div class="tab-group">
-                      <div class="tab-btns">
-                        <button class="tab-btn active" onclick="switchInnerTab(this, 'pre-tab1')">AWS requirements</button>
-                        <button class="tab-btn" onclick="switchInnerTab(this, 'pre-tab2')">Suger requirements</button>
-                        <button class="tab-btn" onclick="switchInnerTab(this, 'pre-tab3')">Buyer requirements</button>
-                      </div>
-                      <div class="tab-pane active" id="pre-tab1">
-                        <ul class="pre-list">
-                          <li class="ph">[Role or system]: [What they need]</li>
-                          <li class="ph">[Role or system]: [What they need]</li>
-                        </ul>
-                      </div>
-                      <div class="tab-pane" id="pre-tab2">
-                        <ul class="pre-list">
-                          <li class="ph">[Suger permission or setting required]</li>
-                        </ul>
-                      </div>
-                      <div class="tab-pane" id="pre-tab3">
-                        <ul class="pre-list">
-                          <li class="ph">[What the buyer needs — e.g., AWS account ID]</li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div class="author-note mt8" style="margin-bottom:0">
-                      <div class="an-head">✏️ Tabs</div>
-                      Tabs are for <strong>mutually exclusive</strong> paths only — not for grouping related fields. Remove tabs if all users follow the same prerequisites.
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Steps -->
-          <div class="a-section">
-            <div class="a-section-head accent-howto">
-              <span class="a-section-label">Steps</span>
-              <span class="badge badge-req">Required</span>
-            </div>
-            <div class="a-body">
-              <div class="author-note">
-                <div class="an-head">✏️ Author guidance</div>
-                <ul>
-                  <li>H2 = major phase. H3 = individual step. Use H2 only if there are 2+ distinct phases.</li>
-                  <li>Specify the system at the start of each phase: "In the Suger Console…" / "In your AWS Console…"</li>
-                  <li>Bold UI elements only — buttons, tabs, menus, fields, screen names. Not "Suger" or "AWS".</li>
-                  <li>Active voice: "Suger pushes the offer…" not "The offer is pushed…"</li>
-                  <li>Place callouts BEFORE the step they affect, never after.</li>
-                  <li>Use tabs only for mutually exclusive paths (e.g., different pricing models).</li>
-                  <li>Screenshots: crop to the relevant area, orange annotations, alt text required. Skip for universal steps (log in, click Save).</li>
-                </ul>
-              </div>
-
-              <div class="h2">[Phase label — e.g., "Create the draft offer"]</div>
-              <p class="ph" style="font-size:13px; margin-bottom:10px">[Optional: 1 sentence on what this phase covers and what the user ends up with.]</p>
-
-              <div class="h3">Step 1: [Action label]</div>
-              <p style="font-size:13px; color:#374151; margin-bottom:8px"><span class="ph">[Specify the system — e.g., "In the Suger Console, navigate to…"]</span></p>
-
-              <div class="callout c-warn">
-                <div class="callout-icon">⚠️</div>
-                <div class="callout-body-wrap">
-                  <div class="callout-title">Important / Warning</div>
-                  <div class="callout-text ph">[Place before a step only if it's irreversible, a blocker, or risks data loss. e.g., "Once submitted, pricing dimensions cannot be changed without creating a new listing."]</div>
-                </div>
-              </div>
-
-              <ul class="step-list">
-                <li><span class="step-num">1</span><span>Go to <b class="ui">[Menu]</b> in the Suger Console.</span></li>
-                <li><span class="step-num">2</span><span>Click <b class="ui">[Button]</b>.</span></li>
-                <li><span class="step-num">3</span><span class="ph">[Next action.]</span></li>
-              </ul>
-
-              <div class="h3">Step 2: Fill in [Section name]</div>
-              <p class="ph" style="font-size:13px; margin-bottom:8px">[One sentence on what this section controls — focus on outcome, not just field names.]</p>
-              <ul class="bullet-list">
-                <li><b class="ui">[Field name]</b> — <span class="ph">[What to enter. Explain "why" only if unintuitive or consequential.]</span></li>
-                <li><b class="ui">[Field name]</b> — <span class="ph">[What to enter.]</span></li>
-              </ul>
-
-              <div class="callout c-note mt8">
-                <div class="callout-icon">ℹ️</div>
-                <div class="callout-body-wrap">
-                  <div class="callout-title">Note</div>
-                  <div class="callout-text ph">[Timing, behavior context, or "your view may differ." Use Note — not Warning — for informational caveats.]</div>
-                </div>
-              </div>
-
-              <div class="h3">Step [N]: Finalize and submit</div>
-              <p style="font-size:13px; color:#374151; margin-bottom:8px">Review your entries, then click <b class="ui">[Submit / Create / Save]</b>.</p>
-
-              <div class="callout c-tip">
-                <div class="callout-icon">💡</div>
-                <div class="callout-body-wrap">
-                  <div class="callout-title">Tip</div>
-                  <div class="callout-text ph">[Optional shortcut or best practice — e.g., "Save a draft first if you're waiting on buyer details. You can return and submit once confirmed."]</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- What to expect next -->
-          <div class="a-section">
-            <div class="a-section-head accent-howto">
-              <span class="a-section-label">What to expect next</span>
-              <span class="badge badge-req">Required</span>
-            </div>
-            <div class="a-body">
-              <div class="author-note">
-                <div class="an-head">✏️ Author guidance</div>
-                <ul>
-                  <li>This closes the loop. Answers "did it work?" before the user has to wonder.</li>
-                  <li>Name the exact status to expect and how long to wait.</li>
-                  <li>Tell the user their immediate next step (share a URL, notify someone, monitor a status).</li>
-                  <li>Add a Note callout for timing caveats or fallback steps.</li>
-                </ul>
-              </div>
-              <div class="whats-next">
-                <div class="wn-title">✅ What happens next</div>
-                <div class="wn-item ph">[Status to expect — e.g., "The offer status will show Pending_Create. Wait up to 5 minutes, then refresh — it will update to Pending_Acceptance once pushed to AWS."]</div>
-                <div class="wn-item ph">[User's immediate next step — e.g., "Copy the offer URL and share it with the buyer."]</div>
-              </div>
-              <div class="callout c-note mt8">
-                <div class="callout-icon">ℹ️</div>
-                <div class="callout-body-wrap">
-                  <div class="callout-title">Note</div>
-                  <div class="callout-text ph">[Timing caveat if needed — e.g., "If the status hasn't updated after 10 minutes, trigger a manual sync from Settings &gt; Integrations."]</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Related articles -->
-          <div class="a-section">
-            <div class="a-section-head accent-howto">
-              <span class="a-section-label">Related articles</span>
-              <span class="badge badge-opt">Optional</span>
-            </div>
-            <div class="a-body">
-              <div class="author-note">
-                <div class="an-head">✏️ Author guidance</div>
-                <ul>
-                  <li>Descriptive link text only. Never "click here" or "read more."</li>
-                  <li>Link to the natural next step in the user's workflow.</li>
-                </ul>
-              </div>
-              <div class="related-link">[Descriptive link — e.g., "Edit an existing private offer"]</div>
-              <div class="related-link">[Descriptive link — e.g., "Track offer statuses across cloud providers"]</div>
-            </div>
-          </div>
-
-          <!-- FAQ -->
-          <div class="a-section">
-            <div class="a-section-head accent-howto">
-              <span class="a-section-label">Frequently asked questions</span>
-              <span class="badge badge-cond">If applicable</span>
-            </div>
-            <div class="a-body">
-              <div class="author-note">
-                <div class="an-head">✏️ Author guidance</div>
-                <ul>
-                  <li>3–5 questions max. Only include questions customers have actually asked. No ghost questions.</li>
-                  <li>Answers: 1–2 sentences. If longer, give a 1-sentence summary and link to the full article.</li>
-                  <li>Don't repeat content already in the steps — fix the step instead.</li>
-                  <li>Each Q&amp;A pair = one Q&amp;A callout block in Pylon.</li>
-                  <li>Use Q&amp;A callout type — not Note or Tip.</li>
-                </ul>
-              </div>
-              <div class="callout c-qa">
-                <div class="callout-icon">🔖</div>
-                <div class="callout-body-wrap">
-                  <div class="callout-title">Q: <span class="ph">[Question as a user would actually phrase it]</span></div>
-                  <div class="callout-text">A: <span class="ph">[1–2 sentence answer. If the full answer requires steps, link with descriptive text.]</span></div>
-                </div>
-              </div>
-              <div class="callout c-qa">
-                <div class="callout-icon">🔖</div>
-                <div class="callout-body-wrap">
-                  <div class="callout-title">Q: <span class="ph">[Second question]</span></div>
-                  <div class="callout-text">A: <span class="ph">[Answer.]</span></div>
-                </div>
-              </div>
-              <div class="callout c-qa">
-                <div class="callout-icon">🔖</div>
-                <div class="callout-body-wrap">
-                  <div class="callout-title">Q: <span class="ph">[Third question]</span></div>
-                  <div class="callout-text">A: <span class="ph">[Answer.]</span></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div><!-- /a-card -->
-      </div><!-- /howto-template -->
-
-      <!-- EXAMPLE VIEW -->
-      <div class="view-pane" id="howto-example">
-        <div class="ex-source-banner">📄 Example based on: <strong>Create an AWS Marketplace private offer</strong></div>
-        <div class="ex-article">
-          <div class="ex-meta">Last updated · May 2026 · Suger Console</div>
-          <div class="ex-title">Create an AWS Marketplace private offer</div>
-          <div class="ex-summary">Private offers in AWS Marketplace let you set custom pricing and contract terms for a specific buyer instead of using your public listing. In Suger, you can create and send these offers without logging into AWS Marketplace directly.</div>
-          <div class="ex-intro">This guide walks you through creating and sending an AWS private offer from start to finish. By the end, your offer will be live and ready for the buyer to review and accept from their AWS account.</div>
-
-          <div class="callout c-pre">
-            <div class="callout-icon">✅</div>
-            <div class="callout-body-wrap">
-              <div class="callout-title">Prerequisites</div>
-              <div class="callout-text">
-                <div class="tab-group">
-                  <div class="tab-btns">
-                    <button class="tab-btn active" onclick="switchInnerTab(this, 'ex1-aws')">AWS requirements</button>
-                    <button class="tab-btn" onclick="switchInnerTab(this, 'ex1-suger')">Suger requirements</button>
-                    <button class="tab-btn" onclick="switchInnerTab(this, 'ex1-buyer')">Buyer requirements</button>
-                  </div>
-                  <div class="tab-pane active" id="ex1-aws">
-                    <ul class="pre-list">
-                      <li>Active AWS Marketplace seller account</li>
-                      <li>Product listed on AWS Marketplace</li>
-                      <li>Buyer's 12-digit AWS account ID</li>
-                    </ul>
-                  </div>
-                  <div class="tab-pane" id="ex1-suger">
-                    <ul class="pre-list">
-                      <li>Offer Manager permissions in Suger</li>
-                      <li>AWS integration connected (Settings &gt; Integrations)</li>
-                    </ul>
-                  </div>
-                  <div class="tab-pane" id="ex1-buyer">
-                    <ul class="pre-list">
-                      <li>Active AWS account</li>
-                      <li>AWS account ID ready to share with you</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="ex-h2">Create the offer in Suger</div>
-
-          <div class="ex-h3">Step 1: Create the draft offer</div>
-          <ol class="ex-step-list">
-            <li><span class="ex-step-num">1</span><span>Go to <b>Offers</b> in the Suger Console.</span></li>
-            <li><span class="ex-step-num">2</span><span>Click <b>+ New Private Offer</b>, then choose the AWS product to associate with the offer.</span></li>
-          </ol>
-
-          <div class="ex-h3">Step 2: Fill in Basic information</div>
-          <div class="ex-p">This section identifies the buyer and tracks the offer internally.</div>
-          <ul class="ex-field-list">
-            <li><b>Offer Name</b> — Name the offer so you can identify it in your pipeline</li>
-            <li><b>Salesforce / HubSpot deal</b> — Optionally link an existing CRM deal for tracking</li>
-            <li><b>Buyer AWS Account(s)</b> — The buyer's 12-digit AWS account ID</li>
-            <li><b>Contacts</b> — Internal or buyer-facing people who should receive notifications</li>
-            <li><b>Internal Description</b> — Notes for your team only. Not visible to the buyer.</li>
-          </ul>
-
-          <div class="ex-h3">Step 3: Fill in Offer terms</div>
-          <div class="ex-p">This section defines how long the offer is valid and the duration of the contract after acceptance.</div>
-          <ul class="ex-field-list">
-            <li><b>Expiry Date</b> — The deadline for the buyer to accept the offer</li>
-            <li><b>Contract Term Length</b> — Duration of the contract after the buyer accepts</li>
-            <li><b>Future start date</b> (optional) — Enable if the contract should begin after acceptance</li>
-          </ul>
-
-          <div class="callout c-warn">
-            <div class="callout-icon">⚠️</div>
-            <div class="callout-body-wrap">
-              <div class="callout-title">Important</div>
-              <div class="callout-text">Once the offer is submitted, the expiry date cannot be changed. If you need to adjust it, you'll need to withdraw the current offer and create a new one.</div>
-            </div>
-          </div>
-
-          <div class="ex-h3">Step 4: Fill in Pricing information</div>
-          <div class="ex-p">Pricing setup depends on your AWS product type. Select the tab that matches yours.</div>
-          <div class="tab-group">
-            <div class="tab-btns">
-              <button class="tab-btn active" onclick="switchInnerTab(this, 'ex1-sub')">Subscription (usage-based)</button>
-              <button class="tab-btn" onclick="switchInnerTab(this, 'ex1-contract')">Contract (fixed commitment)</button>
-              <button class="tab-btn" onclick="switchInnerTab(this, 'ex1-combined')">Combined offer</button>
-              <button class="tab-btn" onclick="switchInnerTab(this, 'ex1-reseller')">Reseller / CPPO</button>
-            </div>
-            <div class="tab-pane active" id="ex1-sub" style="font-size:13px; color:#374151;">
-              Enter your usage dimensions and unit prices. Set the dimension API name to match your AWS listing exactly.
-            </div>
-            <div class="tab-pane" id="ex1-contract" style="font-size:13px; color:#374151;">
-              Set the contract price and duration. This locks in a fixed amount the buyer pays upfront or in installments.
-            </div>
-            <div class="tab-pane" id="ex1-combined" style="font-size:13px; color:#374151;">
-              Configure both a fixed contract commitment and a usage-based component. Use this when buyers pay a base fee plus usage overages.
-            </div>
-            <div class="tab-pane" id="ex1-reseller" style="font-size:13px; color:#374151;">
-              Enter the markup percentage over the ISV's list price. The reseller margin is calculated automatically.
-            </div>
-          </div>
-
-          <div class="ex-h3">Step 5: Add legal terms</div>
-          <div class="ex-p">Select the agreement the buyer must accept when they take the offer: a custom EULA you upload, or the standard AWS Customer Agreement.</div>
-
-          <div class="ex-h3">Step 6: Finalize and submit</div>
-          <div class="ex-p">Review all sections, then click <b>Create offer</b>.</div>
-
-          <div class="callout c-note">
-            <div class="callout-icon">ℹ️</div>
-            <div class="callout-body-wrap">
-              <div class="callout-title">Note</div>
-              <div class="callout-text">Suger validates the offer details before submitting to AWS. If any required fields are missing, you'll see inline error messages pointing to the specific fields.</div>
-            </div>
-          </div>
-
-          <div class="ex-h2">What to expect next</div>
-          <div class="ex-whats-next">
-            <div class="ex-whats-next-title">✅ What happens next</div>
-            <ul>
-              <li>Status: The offer will show <b>Pending_Create</b>. Wait up to 5 minutes and refresh — it updates to <b>Pending_Acceptance</b> once Suger pushes it to AWS and the buyer is notified.</li>
-              <li>Your next step: Open the offer, click <b>Actions &gt; Copy offer URL</b>, then share the URL with the buyer so they can log in to their AWS account, review the terms, and accept.</li>
-            </ul>
-          </div>
-
-          <div class="callout c-note" style="margin-top:10px;">
-            <div class="callout-icon">ℹ️</div>
-            <div class="callout-body-wrap">
-              <div class="callout-title">Note</div>
-              <div class="callout-text">If the status hasn't updated after 10 minutes, go to <b>Settings &gt; Integrations &gt; AWS</b> and click <b>Sync</b>.</div>
-            </div>
-          </div>
-
-          <div class="ex-divider"></div>
-          <div class="ex-section-label">Related articles</div>
-          <div class="ex-related-link">Edit an existing private offer</div>
-          <div class="ex-related-link">Track offer statuses across cloud providers</div>
-          <div class="ex-related-link">Understand private offer pricing models</div>
-
-          <div class="ex-divider"></div>
-          <div class="ex-section-label">Frequently asked questions</div>
-
-          <div class="callout c-qa">
-            <div class="callout-icon">🔖</div>
-            <div class="callout-body-wrap">
-              <div class="callout-title">Q: What is the correct AWS Account ID format and how do I collect it from buyers?</div>
-              <div class="callout-text">A: AWS Account IDs are 12-digit numbers (e.g., 123456789012). Ask your buyer to find it under <b>My Account</b> in the AWS console, or request it through your CRM deal record.</div>
-            </div>
-          </div>
-
-          <div class="callout c-qa">
-            <div class="callout-icon">🔖</div>
-            <div class="callout-body-wrap">
-              <div class="callout-title">Q: Why doesn't my offer status match between Suger and AWS, and when will I get acceptance notifications?</div>
-              <div class="callout-text">A: Suger syncs with AWS every two hours, so there may be a short delay after a buyer accepts before the status updates in Suger. For the latest status immediately, go to <b>Settings &gt; Integrations &gt; AWS</b> and trigger a manual sync.</div>
-            </div>
-          </div>
-
-        </div><!-- /ex-article -->
-      </div><!-- /howto-example -->
-
-    </div><!-- /panel-howto -->
+</script>
+</body>
+</html>
